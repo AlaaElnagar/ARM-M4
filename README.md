@@ -48,9 +48,11 @@ ___
 Cortex -A : [Application]For graphics and rich OS<br />
 Cortex -R : [Response]For high response systems like antena <br />
 Cortex -M :[Medium]For embedded applications <br />
-**ARM categories performance**
+**ARM categories performance**<br />
+
 ![Getting Started](imgs/img7.png)
 **ARM partners**<br />
+
 ![Getting Started](imgs/img8.jpg)
 
 **ARM Major characteristics**<br />
@@ -75,4 +77,13 @@ Cortex -M :[Medium]For embedded applications <br />
 | RTC             | N/A             |  1              |
 | Power           | 5v              |  3.3v           |
  <br />
- 
+# How processor work
+code is converted into machine language and stored in memory processor contains unit called control unit which contain fetching circuit to get instruction into processor then another circuit called instruction decoder satart to understand the fetched instruction, To understand instruction instruction decoder need two main informations OP code of each instruction for example ADD -->101 the second info is instruction format which divide instruction into three main parts OP code, operand1 and operand2 Another circuit is needed which is called ALU to perform opcode in selection signal to excuite opcode in operand1 and operand2 
+
+**Register bank**
+A set of registers in processor (small RAM) each location has special functionality for example 
+01-PC program counter to track instructions in memory <br />
+02-IR instruction register to store fetched instruction  <br />
+03-ACC Acumulator which contains result from ALU <br />
+04-PSW Processor status word which contains a set of flags(bits) for example overflow flag, negative flag[1111111]=255 or -1 this flag define negative one or 255, Zerro flag  <br />
+05-GPR General purpose registers for fast accessing 

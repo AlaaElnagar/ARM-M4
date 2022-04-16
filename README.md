@@ -195,5 +195,124 @@ processor contains bus set and flash also contains a bus set which allows proces
 
 ## Harvard Vs Vonnumnen 
 
+## ARM Architecture 
+Arm is internally harvard architecture which appear as vonnumen have single bus set And contains three main bus set<br >
+01- IBUS :Instruction Bus -->|------------ |              
+02- DBUS :Data Bus-------->|   Bus Matrix   | ------>single Bus set      <br >
+03- SBus :System Bus ------>|------------ |          <br >
+
+Bus matrix convert addresses by adding offsets to the address nedded by the processor when one of the BUS set is need to communicate with other memories of RAM, Flash and IO Memory 
+## Lec3
+ARM Set a protocol to the vendor to follow through manufacturing 
+the protocol is called **AMBA** Advanced microcontroller architecture AMBA contains a set of protocols which can be followed by the vendor, The main two protocols in AMBA are <br >
+01- AHB Advanced High Performance bus 
+      - High Power<br >
+      - Complex design wiring  <br >
+      - Multi master "More than one prepherial can start communication"
+      - Full douplex<br >
+
+02- APB Advanced Peripheral bus<br >
+      - Low Power<br >
+      - less complexity<br >
+      - Low performance <br >
+
+The bus set which out of bus matrix is AHB advanced high performance bus
+the peripherials made by vendor will be coonnected to this AHB protocol for example RCC <br >
+there is a bridge which is used to convert from AHB to APB as shown 
+<p align="center">
+  <img src="imgs/img12.png" />
+</p>
+Note in the above picture all not in red colour is designed by ARM 
+if all prepherials are connected to AHBspeed[72Mhz] it will consume a high power so connect to more lower power protocol APB2 is higher speed[72Mhz] than APB1[36Mhz]
+
+# Steps of programming the chip :
+01- Know about needed documents to read from 
+02- Know prepherial Bus[AHP-APB] from ST document 
+## The Documments 
+***ARM*** : Programming manual if you need to get information about coreprepheral<br >
+***ST***  : Register description for getting information about vendor prepherial <br >
+
+To know the bus which the prepherial will be connected to open st document "Register description" to get the conected bus 
+## AHP Bus connected prepherials 
+Note Boundery address is the register reserved addresses 
+<p align="center">
+  <img src="imgs/img9.png" />
+</p>
+APB2 
+<p align="center">
+  <img src="imgs/img10.png" /> 
+</p>
+APB1
+<p align="center">
+  <img src="imgs/img11.png" /> 
+</p>
+
+--------------------------------------------------------------------
+## Software development cycle 
+<p align="center">
+  <img src="imgs/img13.png" /> 
+</p>
+
+01-***RFQ***:At starting of the project business analyst responsible communicate with the customer to make RFQ `Request for qutation`Document which based on defining cost and time of the project <br >
+02-***CRS***:Customer requirement specification detailed technical requirement in the SW which developed by the technical team which converted RFQ into CRS 
+The Requirements may be done by `system engineer` who define that  <br >
+HSI : Hardware software interface to define hardware requirement document which is hardware team responsibility  <br >
+SRS : Software requirement specification document which is sw team responsibility  <br >
+03-`System ARchitect`: a person who responsible for making static architecture and dynamic architecture to produce HLD Document `High level design document`<br > 
+<p align="center">
+  <img src="imgs/img14.png" /> 
+</p>
+
+***Static Architecture*** : define system software component in layerd model or layerd diagram which named as  [sw component = sw module =sw driver] and consist of:<br >
+01-MCAL : contains in controller prepherial : DIO,ADC,UART.....[FirmaWare Engineer responsibility]<br >
+02-HAL  : Hardware abstraction layer [FirmaWare Engineer responsibility]:Motor,TFT,WIFI...........<br >
+03-APP  : Main which contain the system sequences [Application Engineer responsibility]<br >
+Note : any component can call a component from the layers which is down 
+one of the common component in the static architecture is the Lib which is called by the other layer and can no't call any layer for example `stdTypes`<br >
+Static architecture contains a tables of function names, Arguments and return values <br >
+***dynamic Architecture*** :contains all informations related to [Excution time of each function - function ram consumption - ROM consumption `flash` ]<br >
+04-`Designer` design a diagram for each function using UML language which descripe how it will work according to system architect requirements as memory and excution time  [Flow chart "Activity diagram", State machine, state chart , sequance diagram] the designer responsible for making ***CDD*** document or each software component <br >
+<p align="center">
+  <img src="imgs/img15.png" /> 
+</p>
+
+05-`Developer` responsible for 
+DDD :detailed design document which is an optional step as psoducode for the system  and made by developer <br >
+06-unit testing : for each function  `by developer`<br >
+07-Component testing : each swc alone testing  `tester`  <br >
+09-integration testing : integration of all software components `tester` responsibility<br >
+10-Validation testing  : Upploading the sw on the board and done by `validator`  <br >
+Other supporting positions in the development : Quality assuarance and tooling 
+
+# Q&A
+ARM IS HYPERD :actually arm is Harvard but it is working as vonnument because of bus matrix  <br >
+01-What advantages of core prepherials : fast access and reusability incase of dealing with the same core such as  stM4 like  TIVA M4 software <br >
+02-what is cash memory : sram exists in the processor and faster than external ram and slower than GPR <br >
+
+------------------------
+Files in c .h and .c : .c is compiled file and .h is included inside .c file 
+Note file Guard is very important to avoid calling more than one file at the same time 
+<p align="center">
+  <img src="imgs/img16.png" /> 
+</p>
+
+### Clock system :
+is a periodic pulses to organise fetch microcycle, decode microcycle and excuite microcycle cycle 
+main types of clock may be </p>
+01- Electrical </p>
+02- Mechanical </p>
+        -Ceramic `Oscilator`</p>
+        -Crystal `Resenator`</p>
+Note settling time is the time needed to reach steady state 
+<p align="center">
+  <img src="imgs/img17.png" /> 
+</p>
+
+
+
+
+
+  
+
 
 

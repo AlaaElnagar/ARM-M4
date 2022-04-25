@@ -308,11 +308,44 @@ Note settling time is the time needed to reach steady state
   <img src="imgs/img17.png" /> 
 </p>
 
+# Lec4
 
+ARm is Harvard Architecture but act as vonnumen becuase of bus matrix
+The main step to deal with any prepherial is to know the the bus which will be connected to to know it's clock frequency will be suitable or not<br >
+***RCC*** :Reset and clock controll responsible for controller reset and adjust system clock, this prepherial is vendor prepherial made by ST to controll arm processor clock <BR >
+`Processor Bus matrix, AHP, APP and bridges are made by ARM `
+<p align="center">
+  <img src="imgs/img18.png" /> 
+</p>
 
+RCC CAN supply three types of clocks and connected bypass through xtal1 pin and xtal2 not connected <br >
+HSI : High speed interanal "Interanl clock" of RC type provide 8Mhz 
 
+HSE : High speed external "External connected clock" may be RC or Crystal type `4-16 Mhz incase of Crystal` type and up to `25 Mhz incase of RC`
 
+PLL : Phase locked loop to amplify the clock <span style="color: green"> can work with internal clock to amplify it, PLL internal clock is RC</span>
+
+Note: Processor able to work with 72 Mhz but from PLL<br >
+Rcc provide processor clock selection  
+
+<p align="center">
+  <img src="imgs/img19.png" /> 
+</p>
+
+RCC : Responsible for Enabling and disabling clock which will be passed to the controller 
+Q: Does prepherial consume power incase of enable bit is off answer is Yes 
+<br > Because there is a circuit which is called `enable check circuit` check if prepherial enable pin is active or not, we can disable enable check circuit by switching off the clock using RCC 
   
+So rcc can be use used to enable prepherial clock and select clock value 
+<br >
 
+Elements which have clock by default are :<br >
+01 - RCC <br >
+02 - Core prepherial 
+<p align="center">
+  <img src="imgs/img20.png" /> 
+</p>
 
-
+<span style="color: red"> [NOTE] : There is a memory buffer register responsible for data instruction to fetch data  </span>
+<span style="color: green"><br> Crystal connected to micro controller XTAL1 and XTAL2 where RCC is connected to external vcc ...? <br>Becuase RCC need stable dc without ribbles and microcontroller output dc not sharp dc   </span><br>
+<span style="color: red">  How pll works internally...?  </span>

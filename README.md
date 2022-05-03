@@ -349,3 +349,323 @@ Elements which have clock by default are :<br >
 <span style="color: red"> [NOTE] : There is a memory buffer register responsible for data instruction to fetch data  </span>
 <span style="color: green"><br> Crystal connected to micro controller XTAL1 and XTAL2 where RCC is connected to external vcc ...? <br>Becuase RCC need stable dc without ribbles and microcontroller output dc not sharp dc   </span><br>
 <span style="color: red">  How pll works internally...?  </span>
+
+
+## Writing of a driver 
+- prepare files 
+- Prepare inclusions 
+- define registers <br >
+
+
+drive have a naming convensions where `XYZ` is driver prepheral name<be >
+Driver consists of main two sections <br >
+01- Fixed : Un touchable 
+02- Configurable `able to use driver options according to the implemented configuration` 
+<p align="center">
+  <img src="imgs/img21.png" /> 
+</p> <br >
+
+### Rules to include in .c file 
+01 - Lib <br >
+02 - Interface file of lower layers <br >
+03 - Own driver file `Interface - private - config `
+
+----------
+ST has 3 production lines 
+   - Low denisty 
+   - Medium denisty 
+   - High denisty
+   - Conectivity line <br >
+We are intersted in medium denisty 
+---------------
+To be able to program RC prepherial open Register description document which relevant to the vendor <br >
+AS shown from section 7.3.1 to 7.3.10 exists the description of RCC 
+   <p align="center">
+  <img src="imgs/img22.png" /> 
+</p> <br >
+section 7.3.11 contains register map<br >
+
+- Each prepherial contains base address which is the first address in this prepherial  <br >
+- Each register has it's offset from the base address 
+- Address of any register = Base address + offset 
+<p align="center">
+  <img src="imgs/img23.png" /> 
+</p> <br >
+where to get base address from ...? <br >
+As shown here from memory map section we can go to the relevant bus which the prepherial will be connected to and then we will find prepherial name and it's base address as shown [0x4002 1000 - 0x4002 13FF]
+
+<br >
+
+<p align="center">
+  <img src="imgs/img24.png" /> 
+</p> <br >
+
+------------------
+```
+Writting the registers to the code `casting`
+0x40021000 = 4 ;    /* is wrong and will produce Lvalue error 
+                     its needed to be casted */
+#define RCC_CR               *((u32*)0x40021000)
+RCC_CR = 4    ;     
+```
+```
+/****************Choseing CLK in processor******/
+#define RCC_CR             *((u32*)0x40021000)
+#define RCC_CFGR           *((u32*)0x40021004)
+/***********************************************/
+#define RCC_CIR            *((u32*)0x40021008)
+#define RCC_APB2RSTR       *((u32*)0x4002100C)
+#define RCC_APB1RSTR       *((u32*)0x40021010)
+/***************Enable and Disable CLK***********/
+#define RCC_AHBENR         *((u32*)0x40021014)   
+#define RCC_APB2ENR        *((u32*)0x40021018)
+#define RCC_APB1ENR        *((u32*)0x4002101C)
+/***********************************************/
+#define RCC_BDCR           *((u32*)0x40021020)
+#define RCC_CSR            *((u32*)0x40021024)
+#define RCC_CR             *((u32*)0x40021028)
+```
+## RCC_CR
+This register responsible for enabling and disabling of :<br >
+01 - HSI<br >
+02 - HSE<br >
+03 - PLL<br >
+Clock security system`CSS`
+Responsible for activation of internal clok incase of external clk faliour<br > 
+0 : Not Enable <BR> 
+1 : Disabled 
+HSITRIM[4:0] :
+Responsible for trimming `correction by increasing or decreasing of clock by binary digit 40khz`
+default 1 0 0 0 0 <BR> 
+HSICAL[7:0] :Responsible for reading current existing clock which reached to the system to be corrected by HSITRIM the value is updated only once 
+
+EX: HSICAL Measured 8Mhz+250khz HOW TO get 8Mhz CLK ...?<br>
+HSITRIM = 01010   = 8mhz+10k
+<p align="center">
+  <img src="imgs/img26.png" /> 
+</p> <br >
+
+## RCC_CFGR
+<p align="center">
+  <img src="imgs/img28.png" /> 
+</p> <br >
+
+As shwon RCC responsible for 
+<p align="center">
+  <img src="imgs/img32.png" /> 
+</p> <br >
+
+***MCO[2:0]*** : Responsibl for sendding clock to external pin MCO pin and this pin is very important for diagnostics to know the current clock and set trimming value, also is important for clock cascading by operating of more than one controller using one clk which provide synchronization `all controller have same error synchoronized` disadvantage not save  <br >
+<p align="center">
+  <img src="imgs/img31.png" /> 
+</p> <br >
+
+***PLLSR***   : responsible for passing HSI/2 or HSE to PLL <br >
+***PLLMUL***  : Multiplication factor 16 case to multiply pll value <br >
+Note : incase of PLLMUL produce clk greater than 72Mhz then rcc will not work<br >
+why there is option to divide HSE by 2 : to be able to generate the clock  value you need and reach to 72Mhz <br >
+ex Crystal 16Mhz : need to generate 72 Mhz <br >
+<p align="center">
+  <img src="imgs/img27.png" /> 
+</p> <br >
+
+Question : why there is a need to read system clock from SWS[1:0] is important than sw[1:0] ? Because security system clock pin may switch to internal clock so SW will give the actual connected clock 
+
+# Lec 5 
+As shwon RCC responsible for 
+<p align="center">
+  <img src="imgs/img29.png" /> 
+</p> <br >
+
+Types of configuration :<br >
+01 - Prebuild `Prepocessor directives`<br >
+  - Use # define so it's need to be rebuild of the code and consume low memory  `Can't change configurations in runtime `<br >
+02 - Link time configuration :<br >
+  - Configuration prameters exist in .c file and the program is compiled and given to the user as .obj file to be linked with configuration paramters  `Can't change configurations in runtime ` provide security to the code 
+  <p align="center">
+  <img src="imgs/img30.png" /> 
+</p> <br >
+
+03 - Post build configuration :<br >
+  - A data in a memory and the code read this configuration data during the  runtime by changing of the configuration prameters during runtime    
+
+  # GPIO :
+  General input output pins contains 35 io pins in 3 ports<BR >
+  01 - PORTA  0 :15 <BR >
+  02 - PORTB  0 :15 <BR >
+  03 - PORTC  C13,C14,C15 <BR >
+  GPIO pin may be input or `output low or high` <br >
+  GPIO Provide source current incase of output `SOURCE` as 25 ma incase of forward connection <br >
+  GPIO Receive current incase of input `SINK` as 150ma incase of reverse connection <br >
+  Note portc provide source current as zero a it works only as `sink`<br >
+   <p align="center">
+  <img src="imgs/img33.png" /> 
+</p> <br >
+
+### Data direction register 
+Each GPIO PIN has 4 bit 16pin*4=64 bit 
+so two register are needed <BR >
+CRL : control pins from pin0 to pin 7<BR >
+CRH : control pins from pin8 to pin 15
+   <p align="center">
+  <img src="imgs/img34.png" /> 
+</p> <br >
+Each pin has 4 bit dividded into two main sections as shown and incase of output we able to define output frequency from the pin to reduce used power incase of low change on the pin <BR >
+
+***Surprise*** Any pin is able to work as ADC <br >
+AF      : Alternative function `Function not for DIO example for i2c`<br >
+Pushpull: 0 = 0 volt , 1 = 3.3 volt <br >
+   <p align="center">
+  <img src="imgs/img35.png" /> 
+</p> <br >
+Each port has 7 registers :<br >
+CRL   <br >
+CRH<br >
+
+IDR `iNPUT DATA REGISTER `<br >
+ODR `OUTPUT DATA REGISTER `<br >
+   <p align="center">
+  <img src="imgs/img36.png" /> 
+</p> <br >
+
+Conclusion <br >
+
+there is two registers responsiple for the 32 pin <br >
+CRL for first 16 bits <br >
+CRH for the last bits<br >
+each pin has four bits two for mode (input or output )<br >
+and two for configuration (push pull -open drain- AF) <br >
+Also there is a register which called ODR output data register <br >
+and IDR input data register for output <br >
+   <p align="center">
+  <img src="imgs/img37.png" /> 
+</p> <br >
+
+# Lec 7
+
+
+- Open drain concept <br >
+     <p align="center">
+  <img src="imgs/img38.png" /> 
+</p> <br >
+Usages :<br >
+
+  - Motor direction control with any voltage [Configurable High level voltage]
+       <p align="center">
+  <img src="imgs/img39.png" /> 
+</p> <br >
+
+- Open drain bus `Multi number of node communicate through the same line without short circuit ` such as [CAN - LIN - I2C]
+       <p align="center">
+  <img src="imgs/img40.png" /> 
+</p> <br >
+     
+----------------------------
+## LED Power :
+ main types of USB <BR >
+ USB current varry accordding to the types as shown
+        <p align="center">
+  <img src="imgs/img41.png" /> 
+</p> <br >
+LED power from 40 to 160w so usb will burn the led <br >
+Controller current around of 25ma  <br >
+        <p align="center">
+  <img src="imgs/img42.png" /> 
+</p> <br >
+
+### Bit Set Reset Register [BSRR]
+Consist of two sections set and reset the bit directly by writing one on it which provide efficency in writing more than `ODR` Register
+        <p align="center">
+  <img src="imgs/img44.png" /> 
+</p> <br >
+
+### Bit Reset Register [BRR] 
+Responsible for resetiting the pin directly, The higher part of the register has no usage
+        <p align="center">
+  <img src="imgs/img45.png" /> 
+</p> <br >
+
+### Use case for BSRR, BRR And ODR 
+
+<p align="center">
+  <img src="imgs/img46.png" /> 
+</p> <br >
+
+
+### Lock register [LCKR]
+It's a register responsible for locking the mode of the pin to not be changed in CRL AND CRH during the runtime 
+<p align="center">
+  <img src="imgs/img47.png" /> 
+</p> <br >
+
+## Interrupt
+Processor has Interrupt pin when an event occur it will signal the processor <br >
+
+Types of interrupts : <br>
+
+<p align="center">
+  <img src="imgs/img48.png" /> 
+</p> <br >
+
+Interrupt handling :
+<p align="center">
+  <img src="imgs/img49.png" /> 
+</p> <br >
+Types of interrupts :<BR>
+1- Vectorable : <BR >
+During Compilation all ISR is distributed according to the linker and startup code distribute the addresses of all the ISR according to it's relevant location index in the vector table <br >
+-   Prephiral send pulse to pic Circuit when PIF And PIE is enabled <br >
+-  PIC write the number of prephiral into memory Index of PIC <br >
+-  PIC Send pulse to processor <br >
+-  Processor read index register<br >
+-  Processor Jump to vector table  <br >
+-  Processor find the corrosponding index and jump to the address of the ISR to excuite it <br >
+
+What happen incase of more than of one interrupt happend ? <br >
+- Vectorable interrupt is `Fixed Priority`
+<br >
+According to the Priority in PIC Circuit `Index of Interrupt` defined by the manufacturer<br >
+
+2- Flexable Priority:<br>
+Exist in PIC Micro controller 
+- Any interrupt occur PIC Generate pulse to processor 
+- Processor Jump to interrupt vector `Not vector table` only one location
+- Processor find the address of ISR to excuite it and it contains a specific SW by the developer according to the Enbled PIF <Br >
+- The priority of excution can be handled by the developer 
+<p align="center">
+  <img src="imgs/img50.png" /> 
+</p> <br >
+Comparssion between flixable priority and vectorable :<br >
+Vectorable : Fixed priority - Hardware handled `Faster` - Low interrupt Latency `Fixed `  - Like AVR <br >
+Flexable Priority : Flexable priority - sw handled `slower` - High interrupt Latency `Varaible Latency ` - Like PIC <br >
+
+### Flag Clearance 
+
+  After interrupt occurance there is a need to clear the flag to be able to detect interrupt occurance 
+  Clearing methods of flag clearance : <Br >
+  - By hardware 
+  - By writing Zerro
+  - By writing one to the flag
+  - By Reading flag 
+  ### Interrupt Nesting 
+  Occuring of interrupt during the excution of current ISR may be one of two 
+  - Support nesting 
+      - Normal nesting `Higher priority interrupt cut the currently excuited interrupt ` and normal nesting has maximum level of nesting 
+      - Self nesting : Interrupt is excuiting and the same interrupt happend again during excution eg Timer over flow 
+  ## Interrupts in ARM
+  The INIC: nested vectored interrupt controller <br >
+  CorePrephiral `Lowest Latency time` + Standard related to ARM <br >
+  Support 255 inturrpt 240 external + 15 internal 
+<br >
+Vector table based system 
+## ARM M3 NVIC 
+There is and gate inside the controller relvent to the external interrupts to enable and disable it <br >
+* Support Normal nesting  255 Level <br >
+* support both SW and hardware priority 
+* Each interrupt has priority register <br >
+* SW developer can assign value for each priority <br >
+* if SW Priority not defined then processor will look at the hardware priority 
+* Support sumlation of other prepherials interrupt through enable interrupt occurance using SW 
+<p align="center">
+  <img src="imgs/img5.png" /> 
+</p> <br >

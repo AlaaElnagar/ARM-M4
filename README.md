@@ -653,7 +653,7 @@ Flexable Priority : Flexable priority - sw handled `slower` - High interrupt Lat
       - Normal nesting `Higher priority interrupt cut the currently excuited interrupt ` and normal nesting has maximum level of nesting 
       - Self nesting : Interrupt is excuiting and the same interrupt happend again during excution eg Timer over flow 
   ## Interrupts in ARM
-  The INIC: nested vectored interrupt controller <br >
+  ### The INVIC: nested vectored interrupt controller <br >
   CorePrephiral `Lowest Latency time` + Standard related to ARM <br >
   Support 255 inturrpt 240 external + 15 internal 
 <br >
@@ -669,3 +669,492 @@ There is and gate inside the controller relvent to the external interrupts to en
 <p align="center">
   <img src="imgs/img5.png" /> 
 </p> <br >
+
+## NVIC external interrupts
+<p align="center">
+  <img src="imgs/img51.png" /> 
+</p> <br >
+
+- Each EXTI has two falg active `Running` Flag and Pending `Exist but not happend ` flag 
+- NVIC is Core prepherial 
+- Manage 255 interrupt
+- 1:15 are internal interrupt and 16 to 255 are external 
+- The numbering represent the priority `internal interrupt are higher priority`
+- inside NVIC Each external inturrept input has it's Enable bit 
+- prephirals interrupt flag PIF enter to NVIC 
+- NVIC is able to enable and disable `mask` All external interrupts PIF 
+- Some prepherial has PIE before NVIC as shown 
+- All external prepherials are masked in ARM
+- interrupt signal which enterd to NVIC AND Gate is called `Pending Flag`
+- Active flag is always one during ISR excution
+- Each interrupt has two flags pending Flag and Active `Running` Flag <br >
+
+***Status of Pending and active flag***
+<p align="center">
+  <img src="imgs/img52.png" /> 
+</p> <br >
+Conclusion : 
+NVIC Manage all interrupt but controll only external interrupt <br > 
+NVIC Control EXTI trough :<br >
+
+-  Enable
+-  Disable 
+-  Set Pending Flag
+-  Clear Pending Flag
+-  Change priority
+NVIC Manage internal interupt trough :<br >
+
+- NVIC Allow internal interrupt to excuite according to it's priority  
+- NVIC Can't set and clear pending flag for core prepherials 
+- Coreperipherials interrupts priority can be handeled through the coreprepherial itself 
+
+## Interrupt priorities 
+Each interrupt internal or external has two priorities <br >
+01 - SW Priorities    [0`Highest` --->255`Lowest`] <BR >
+02 - HW Priorities    [Position of interrupt at NVIC ] <BR >
+
+- All internal interrupts has hardware priority higher than external interrupt
+- By default all interrupts sw priority is zerro
+- if SW Priority not set then HW priority will be the reference 
+
+## Nesting 
+- NVIC NOT supporting self nesting 
+- NVIC support normal nesting 
+### Interrupts self nesting 
+<p align="center">
+  <img src="imgs/img53.png" /> 
+</p> <br >
+Each interrupt has two priorities :<br >
+
+- Group priority <br >
+- Sup periority  <br >
+
+Each group has it's own priority 
+<p align="center">
+  <img src="imgs/img54.png" /> 
+</p> <br >
+
+- Group zerro is the highest priority 
+- Group zerro contains `ADC - TIMR - UART`
+- Each interrupt has it's own sub priority in each group As shown 
+- No nesting in the same group and nesting exist only between groups 
+
+ ### EXAMPLES 
+
+ <p align="center">
+  <img src="imgs/img55.png" /> 
+</p> <br >  
+
+## Vector Table
+- Vector Table has fixed location
+- ISR Routines are located in different location in flash memory 
+- Vector table may be in RAM or FLASH 
+    - Static vector table <br >
+      -   No Change of isr routines address in runtime 
+      -   Exist in flash memory
+      -   Burnner flash vector table according to hex file location of each interrupt and the address of the relevant isr 
+      -   No need run time to be intialized because it is intialized by efault  
+
+    - Dynamic vector table <br >
+      -   Change of isr address in runtime is possible 
+      -   Exist in RAM in .vector secssion 
+      -   Startup code is the first code run and responsible for intializing vector table incase of this vector table in RAM 
+      -  Need time to intialize vector table in ram so startup code disable all interrupts untill vector table is  intialized 
+
+ARM default vector table is static 
+
+## NVIC Driver : 
+Documents : <br >
+
+-   Register description document
+    - To make st driver  
+There is three interupt has fixed priority but maskable 
+
+<p align="center">
+  <img src="imgs/img56.png" /> 
+</p> <br >  
+
+-   Programming manual document
+    - ARM Drivers `NVIC Base address `
+<p align="center">
+  <img src="imgs/img58.png" /> 
+</p> <br >  
+
+ [Note]      
+ - There is specific address for the external prepherial to make processor able to access it 
+ - The coreprepherial don't has address but each coreprepherial has assembly index or instruction to be addressable 
+- To be able to access core prepherials in C ARM Made memory mapping for some coreperipherial  or `Mirroring` to avoid assembly usage 
+- NVIC is memory maped 
+
+<p align="center">
+  <img src="imgs/img57.png" /> 
+</p> <br >  
+
+
+## NVIC Registers `From programming manual`
+
+### ISERx 'Interrupt set enable register'
+A set of  32 bit registers to enable external interupts up to 240 EXTI but in ARM M3 contains up to 59 EXTI interrupt 
+<p align="center">
+  <img src="imgs/img59.png" /> 
+</p> <br >  
+
+### ICERx 'Interrupt Clear enable register'
+To disable the interrupt of a specific prepherial 
+<p align="center">
+  <img src="imgs/img60.png" /> 
+</p> <br >  
+
+### ISPR 'Interrupt set pending register'
+To set pending flag for debugging reasons 
+<p align="center">
+  <img src="imgs/img61.png" /> 
+</p> <br >  
+
+### ICPR 'Interrupt clear pending register'
+To clear pending flag for debugging reasons 
+<p align="center">
+  <img src="imgs/img62.png" /> 
+</p> <br >  
+
+### IABR 'Interrupt active bit register'
+Contains state of active flag 
+<p align="center">
+  <img src="imgs/img63.png" /> 
+</p> <br >  
+
+### IBRx'Interrupt Priority register'
+Responsible for each interrupt priority, each IBR register responsible for four interrupts, 
+<p align="center">
+  <img src="imgs/img64.png" /> 
+</p> <br >  
+This register responsible for group and priority 
+<p align="center">
+  <img src="imgs/img80.png" /> 
+</p> <br >  
+<p align="center">
+  <img src="imgs/img81.png" /> 
+</p> <br >  
+Examble EXTI cut EXTI0
+<p align="center">
+  <img src="imgs/img83.png" /> 
+</p> <br >  
+
+
+
+## SCB `System control block coreprepherial`
+### AIRCR `Application interrupt and reset control register `
+<p align="center">
+  <img src="imgs/img82.png" /> 
+</p> <br >  
+- the upper 16 bit are the key or password  `0x05fa` to be able to write in the register otherwie processor will ignor the writing 
+- There is three bits responsible for selecting group and sub group priorities 
+- xxxx for group priorities 
+- yyyy for sub group priorities 
+- This register control [IBRx](#IBRx) Priorities
+
+<p align="center">
+  <img src="imgs/img65.png" /> 
+</p> <br >  
+
+Three bits grouping and sub grouping 
+<p align="center">
+  <img src="imgs/img66.png" /> 
+</p> <br >  
+
+```
+                            /**Grouping and sub grouping /
+/* in (SCB => AIRCR) 4 bits for group and 0 sub => 4bits in (IPR) to determine group number	*/
+#define		GROUP4		0x05FA0300 
+/* in (SCB => AIRCR) 3 bits for Group and 1 bit for sub										*/
+#define		GROUP3		0x05FA0400 
+/* in (SCB => AIRCR) 2 bits for Group and 2 bit for sub										*/
+#define		GROUP2		0x05FA0500 
+/* in (SCB => AIRCR) 1 bits for Group and 3 bit for sub										*/
+#define		GROUP1		0x05FA0600 
+/* in (SCB => AIRCR) 0 group for 4 bits for sub												*/
+#define		GROUP0		0x05FA0700 
+```
+API To set group and sub group 
+
+```
+void MNVIC_voidSetPriority(s8 Copy_s8IntID , u8 Copy_u8GroupPriority ,u8 Copy_u8SubPriority )
+{							/*0x05FA0400 3 Group & 1 sub priority*/
+	u8 Local_u8Priority = Copy_u8SubPriority|(Copy_u8GroupPriority<<((NO_OF_GROUPS_SUB - 0x05FA0300)/256));
+	/* core peripheral 			*/
+	if(Copy_s8IntID < 0)
+	{
+
+	}
+	/* external peripheral		*/ /*EXTI0 = 6*/
+	else if(Copy_s8IntID >= 0)
+	{
+		NVIC_IPR[Copy_s8IntID] = Local_u8Priority << 4 ;
+	}
+	SCB_AIRCR = NO_OF_GROUPS_SUB ;
+}
+
+```
+
+# EXTI 
+After handling NVIC we can get EXTI address from register description
+<p align="center">
+  <img src="imgs/img67.png" /> 
+</p> <br >  
+
+<p align="center">
+  <img src="imgs/img68.png" /> 
+</p> <br >  
+
+```
+typedef struct{
+	volatile u32 IMR;
+	volatile u32 EMR;
+	volatile u32 RSTR;
+	volatile u32 FTSR;
+	volatile u32 SWIER;
+	volatile u32 PR;
+	
+}EXTI_t;
+
+#define EXTI ((volatile EXTI_t *) 0x40010400 )
+```
+
+There is 15 line related to 15 interrupt for each pin A,B and C as shown 
+<p align="center">
+  <img src="imgs/img70.png" /> 
+</p> <br >
+
+we can configure the EXTI line through 
+##  IMR
+configure the EXTI line  
+<p align="center">
+  <img src="imgs/img71.png" /> 
+</p> <br >
+
+## RTSR
+Configure EXTI line latching  as rising edge triggerd 
+<p align="center">
+  <img src="imgs/img72.png" /> 
+</p> <br >
+
+## FTSR
+Configure EXTI line latching  as FALLING edge triggerd 
+<p align="center">
+  <img src="imgs/img73.png" /> 
+</p> <br >
+
+[ NOTE ] For on change set both FTSR AND RTSR 
+
+## SWIER  
+Responsible for SW interrupt
+<p align="center">
+  <img src="imgs/img74.png" /> 
+</p> <br > 
+
+# EXTICRx
+To configure port A or b or c as EXTI with it's pin 
+<p align="center">
+  <img src="imgs/img75.png" /> 
+</p> <br > 
+
+Example to configure pin 3
+  - select line 3 from IMR 
+  - select section 3 to select port A or B or C at line 3 `pin3`
+
+  # Debugger Configuration 
+  <p align="center">
+  <img src="imgs/img76.png" /> 
+</p> <br > 
+<p align="center">
+  <img src="imgs/img77.png" /> 
+</p> <br > 
+<p align="center">
+  <img src="imgs/img78.png" /> 
+</p> <br > 
+
+# Lec 10 
+### Termonology
+
+- Development : Writing the code 
+- Building    : Generation of excuitable file 
+- Progrmming / Building / Flashing / Downloading : Downlaoding hex to flash of micro controller 
+- Debugging : Searching for a bug using 
+  - cross review through searching using eye 
+  - Debegger : 
+      - need controller which support debugging 
+        - Contains OCD or ICD 'In circuit debugger '
+      - need debugger
+        -   ' To be able to stop processor at any point '
+        -   Run line by line 
+        -   Read different registers 
+        -   Read or write register memory at run time 
+        -  Any debugger able to flash SW 
+        - ST LINK UTILITY 'Able to flash SW '
+        - Open OCD able to flash and debug 
+      - need debugging tool 
+          - Plugin on eclipse called open OCD 
+<p align="center">
+  <img src="imgs/img79.png" /> 
+</p> <br > 
+
+## Termonologies 
+
+- Simulator 
+  - SW programe simulate controller behaviour 
+  - Setuped on PC 
+  - Not 100% real    
+  - ot real time 
+
+- Emulator :
+    -  Target + debugger >> without need to the controller itself 
+And Emulator support more than one target  
+    
+  - used incase of the target not known yet  
+  - costly 
+
+- Burner : 
+  - Flashing for code on micro controller flash memory 
+
+- Debugger : 
+   - Flashing + debugging 
+
+# SYSTIC 
+## Basic concepts :
+Couter / Timer : <br >
+<p align="center">
+  <img src="imgs/img84.png" /> 
+</p> <br > 
+
+ - Is a register be default contains zerros 
+ - Counter register width is called `Resolution `
+ - Counter count with each edge Rising/falling 
+ - Counter can be connected to sensor and count asynchrounously 
+ - Counter can be connected to clock and then count synchrounsly 
+ - Timer is a counter which count clock 
+ - Timer time {Tick time }is equal 1/F `timer`
+<p align="center">
+  <img src="imgs/img85.png" /> 
+</p> <br > 
+
+ - Timer value at any time = Register value * Tick time of the timer 
+<p align="center">
+  <img src="imgs/img86.png" /> 
+</p> <br > 
+
+- Timer over folw occur when register is full 
+<p align="center">
+  <img src="imgs/img87.png" /> 
+</p> <br > 
+
+## SYSTIC Features 
+
+ - Coreprepherial 
+ - Memory mapped `Can be accessed using C`
+ - Standard `Any cortex M3 Contain systic`
+ - 24 Bit resolution 
+ - Timer Only `Input always Clk`
+ - Timer input clk May be AHB or AHB over 8 
+ - Count down Give interrupt when it reach zerro `Under flow interrupt`
+ - its ISR function writen as ```void systic_Handle(void)``` because it's internal interrupt 
+
+ Example on systic `Need systic to count 100 msec`
+
+<p align="center">
+  <img src="imgs/img88.png" /> 
+</p> <br > 
+
+## SYSTIC registers
+
+### CTRL Control register 
+Systic can't be enabled using NVIC because it's core prephiral 
+- ENABLE 
+- TIC INT  `interrupt Enable `
+- CLKSOURCE `Clk source AHB or AHB/8`
+- COUNTFLAG `Flag cleared when read`
+<p align="center">
+  <img src="imgs/img89.png" /> 
+</p> <br > 
+
+### LOAD load register 
+- Is used to load number of ticks to be count 
+- Hardware move the count to VALUE Register to be loadded again after underinterrupt from Load register 
+<p align="center">
+  <img src="imgs/img90.png" /> 
+</p> <br > 
+<p align="center">
+  <img src="imgs/img91.png" /> 
+</p> <br > 
+
+### LOAD load register <p align="center">
+Actual counting value which will be loadded from load register 
+  <img src="imgs/img92.png" /> 
+</p> <br > 
+
+Conclusion for SYSTIC register 
+W
+
+  <img src="imgs/img99.png" /> 
+</p> <br > 
+
+What is the difference between API `Application public interface ` and private function : <br >
+API can be called at different SWC but private function can not <br > 
+What is the difference between synchrounous and Asynchrounous function ? 
+<br >Synchrounous Function or `Busy wait func`is will not  return unless it's functionality is not finished and Asynchronous function will return before finishing it's functionality  .
+<br >
+Pointer To function :
+it's a varaible which points to function  where the name of the function is it's address 
+<img src="imgs/img101.png" /> 
+</p> <br >
+
+---------------
+# OpenQuestions
+## Volatile       
+<img src="imgs/img93.png" /> 
+</p> <br >
+the variable X value will not changeable so the tool which is called optimizer will cach x into GPR and then the value of x will not be changed 
+, If there is there is need to change the variable x for example through hardware or inside ISR then x will not be cahnged so the word voltile will prevent the variable x from being cached 
+
+<img src="imgs/img93.png" /> 
+</p> <br >  
+<img src="imgs/img94.png" /> 
+</p> <br >  
+
+The wayes of falior
+- Change by hardware 
+    - Interrupt
+    - Register change
+    - MultiTasking `Change in same variable between while loops` 
+
+
+   <img src="imgs/img95.png" /> 
+</p> <br > 
+
+## Function call VS SWI 
+   <img src="imgs/img96.png" /> 
+</p> <br > 
+Function call 
+
+- Can be normally interrupt unless critical section is called 
+- Has different context switching 
+    * PSW NOT includded in context switching 
+
+SW interrupt
+
+- May not be interrupt without critical section if nesting is not allowed 
+- Has different context switching 
+    * PSW includded in context switching 
+
+# ARM Operational Modes 
+ <img src="imgs/img97.png" /> 
+</p> <br > 
+
+  - Privilage 
+       - All registers can be accessed 
+  - Non privilage 
+       - Not all registers accessable 
+<br >
+ - good practice after intialization convert from privilage mode to unprivilage 
+ - To convert from privilage to unprivilage you must convert in interrupt so Software interrupt will be helpfull in this case to convert from privilage to unprivilage because all interrupts run in privilage mode and all function call run in the same mode and can not change from privilage to non privilage 
+     <img src="imgs/img98.png" /> 
+</p> <br > 

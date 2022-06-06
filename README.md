@@ -1,4 +1,5 @@
 # ARM-M4
+http://files.imtschool.com/ARM/
 ## This repo related to ARM M4 course preparation   
 ![Getting Started](imgs/img1.png)
 
@@ -1158,3 +1159,1196 @@ SW interrupt
  - To convert from privilage to unprivilage you must convert in interrupt so Software interrupt will be helpfull in this case to convert from privilage to unprivilage because all interrupts run in privilage mode and all function call run in the same mode and can not change from privilage to non privilage 
      <img src="imgs/img98.png" /> 
 </p> <br > 
+
+
+
+
+
+--------------------------------------------------------------------------------------
+
+# Session13 LedMatrix
+Displays 
+Used to send vissual message sending or attraction <br >
+Types :<br >
+  - Segment Display <BR >
+
+     <img src="imgs/img102.png" /> 
+</p> <br > 
+
+-  7segment  
+         - Alpha numeric <br >
+         Advantages : <br >
+          Ease of programming<br >
+          Attracive `High intenisty `<br >
+          Disadvantage :<br >
+          Consume many dio pins <br >
+          Consume High power <br >
+          Rigid to specific application such as traffic signs <br >
+
+- Led matrix display <br >
+Drowing a specific shape using leds 
+Advantages : 
+      Very attractive <br >
+      Flexiable to drow any shape  <br >
+Disadvantages        <br >
+      Not easy to programme  <br >
+      High Power
+      Consume big io number  <br >
+
+## Led Matrix concept :
+
+<img src="imgs/img104.png" /> 
+</p> <br > 
+
+Specifications : <br >
+  - Size x*y  nuber of leds eg 8Coloumns * 8 Rows   
+     <img src="imgs/img103.png" /> 
+</p> <br > 
+
+  - LedMatrix physical connection 
+
+
+  - Modes of operations 
+        - Coloumn controll Active coloumn at time <br >
+        - Row controll 
+Never activate two coloumn at same time 
+
+# How it works : 
+Using presistance of vission  POV 
+### POV Concept 
+  <img src="imgs/img105.png" /> 
+</p> <br > 
+
+Human Eye average limit 25 frame/second
+
+LED matrix Algorithm : 
+  <img src="imgs/img106.png" /> 
+</p> <br >
+
+
+# Infra Red
+Light which can't be detected by human eye because it's wave length is lower than human detectable light and very high speed because it's same as light speed 
+  <img src="imgs/img107.png" /> 
+</p> <br >
+
+## Advantages 
+- Simple 
+- Low Cost 
+- Effect on the product cost 
+- Up to 10 meter length of effect 
+- Can't be seen 
+
+## IR Challenge 
+- Need to be On sight location 
+- Interference with the abient light noise may occurs 
+- Sending IR with light frequency which not exist in the ambient will be 
+- helpfull for example 38kHz 
+- Maximum number of remote controllers at the same location are limitted to address location in the frame  
+
+- Hackable `CARS Which was working with IR Door controll was hackable `
+
+  <img src="imgs/img108.png" /> 
+</p> <br >
+
+## IR System 
+  <img src="imgs/img111.png" /> 
+</p> <br >
+
+###   Transmitter [Remote Controller]
+  <img src="imgs/img109.png" /> 
+</p> <br >
+Consist's of IR Led connected to GND and Emulator to generate specific frequency `38Khz` by the led 
+
+### Receiver 
+is IR Receiver connected to 3.3volt, GND, And output between 0 and 1 `1 Is the default output ` if `The frequency is 3.3Khz` and then will be connected to modulator `Controller ` to send action to the actuator 
+
+## Receiver Protocol
+Transmitter send encrypted data to the receiver then a decryption is needed 
+### NEC Protocol 
+Comes from NEC Company which is Japaniese company  which nowdays is called renesas in Tokio
+### IR Protocol
+#### How to send zerro and one through NEC Protocol : <br >
+  <img src="imgs/img110.png" /> 
+</p> <br >
+
+To send Zerro
+-   Transmitter Send pulse train with a time length of ` 560Microsecod ` then send zerro for `560Microsecond `then this train will represent bit of Logical Low To send Zerro, Then receiver will sense a value of low 
+
+To send One 
+
+- Send same a pulse train with same as logical low but send zerro for ` 1687 Microsecond ` 
+
+Zerro Consume : 1125 Microseconds
+One Consume   : 2250 Microseconds 
+## Nec frame 
+  <img src="imgs/img112.png" /> 
+</p> <br >
+What make two NEC remote controll don't interrupt ?? <br >
+
+-  Send start bit `A pulse Train of 9 ms then 4.5ms Low `
+-  8 Bit transmitter address 
+-  8 Bit same address as Inverted
+-  8 Bit Data 
+-  8 Bit Data Inverted <br >
+Total frame time 67.5msec <br >
+Why inverted :<br > 
+
+- For verfication 
+- For fixed Transmitting time `Constant Frame Time `
+
+## Example 
+- address of 0000 0001 
+- data       0000 1010
+  <img src="imgs/img113.png" /> 
+</p> <br >
+
+How to code it :
+ - Connect receiver pin to EXTI0 as Falling 
+ - if the signal width is 2250 then it's High pulse 
+ - if the signal width is 1125 then it's Low pulse
+
+We need timer, EXTI AS Falling edge  and array to store in it the frame  
+
+# Audio 
+The real world is based on analog signals, And computing system based on digital signals 
+to convert from analog to digital a ADC is needed 
+
+## ADC 
+Analog to digital system saturates one step before the minimum 
+  <img src="imgs/img114.png" /> 
+</p> <br >
+
+## Important lows.
+
+as shown in the example that the result of converssion will be from 2.25  ---->( 2.25 + step )
+Because of the converssion error 
+  <img src="imgs/img115.png" /> 
+</p> <br >
+  <img src="imgs/img116.png" /> 
+</p> <br >
+
+## How to read analog signal with different levels of voltages 
+
+01 - Sampling : By getting different samples at different points 
+02 - Quantization : reading the analog value and it to be digital <br > 
+The quantized value are stored in array as shown 
+
+Sources of error <br >
+01 - Sampling error 
+02 - Quentization error 
+
+Good sampling according to nequest is 2*Max frequency and the more samples the beter accuracy but that will affect the memory 
+
+  <img src="imgs/img117.png" /> 
+</p> <br >
+
+# Audio signal 
+
+human can hear between 20Hz to 20khz <br >
+male frequency in between 150Hz to 3.5Khz <br >
+Female frequancy in between 250Hz to 4Khz <br >
+
+if Highest frequency in human voice is 4khz : <br >
+ - Sampling frequency will be at least 2*Freq = 8Khz 
+ Assuming That each sample will be stored in 1 byte so the one second will cost 8kbyte 
+
+ ## Generating array from song 
+   <img src="imgs/img118.png" /> 
+</p> <br >
+
+to convert the .raw  header to .h file using xxd.exe at the same location 
+   <img src="imgs/img119.png" /> 
+</p> <br >
+
+Converting analog to digital to : 
+01 - Analysis such as reading of temperature sensor to take an acction <br >
+02 - Storing the analog vlaue to be played as song in a speaker 
+<br >
+
+   <img src="imgs/img120.png" /> 
+</p> <br >
+
+What types of errors would be exist when receiving song and storing Then implementation on Dac 
+<br >
+01 - Smpling error <br >
+02 -Quntization error   <br >
+Dack output Will never be equal the refference voltage 
+   <img src="imgs/img121.png" /> 
+</p> <br >
+
+# How to make Dack ? [R2R DACK ]
+
+   <img src="imgs/img122.png" /> 
+</p> <br >
+
+# Example 
+
+   <img src="imgs/img123.png" /> 
+</p> <br >
+
+when playing the song we can find that the it's sound is weak so audio amplifier is needed 
+   <img src="imgs/img124.png" /> 
+</p> <br >
+
+## Amplifer to speaker connection
+
+   <img src="imgs/img125.png" /> 
+</p> <br >
+
+# DMA "Direct memory access " 
+
+- Memory may be Ram or preipherial memory such as UART memory 
+- DMA Also called DTC Direct Memory access 
+- Mission Copy Data from source memory to a distination memory 
+- DMA CAN Transfere from RAM To prepherrial RAM ----> UART
+- DMA Can Transfere data from prepherial to ram  UART ---> RAM 
+- DMA Can send from RAM To RAM 
+- DMA Can transfere from preipherial to preipherial 
+
+```
+for (uint_8 i = 0 ; i < 1000 ; i++){
+Arr_2[i] = Arr_1[i]
+}
+```
+- in the last example processor will consume 3000 clock cycle incase of cycle tack 3clks fetch, decode and excuite 
+
+- in the case of DMA it will take the responsiblility of transfereing the data between the two arrays then it will generate interrupt 
+- DMA is related to the vendor ST And not core prepherial 
+
+### DMA Configurations 
+- Source address 
+- destination address 
+- Transfere data from source to destination 
+- Block of data to be transfere length 
+- Size of elemet `Depend on Data Bus ` and in stm32 data length is 4 bytes to be transmitted 
+- STM32f103 Contains only DMA1 
+- DMA Contains 7 channels to handle different memories at the same time looks like ADC 
+- The channels of DMA1 Works as switching 
+- SINC `Source increment ` & DINC `Destination increment ` 
+
+   <img src="imgs/img126.png" /> 
+</p> <br >
+
+- DMA Can be configured incase of there is a trigger source according to preipherial event 
+- DMA Can work in Free Running `Don't Wait anything `
+- DMA is able to work circular `Repeat the data `
+
+### DMA Interrupt 
+- Transfere complete interrupt `When data transfere is completed `
+- Half transfere complete 
+- DMA Exists in AHP Bus 
+- Transfere Error interrupt incase of memory consumed 
+
+All the these interrupts are in OR Gate when any one occurs then GIF `General interrupt Flag become 1`
+   <img src="imgs/img127.png" /> 
+</p> <br >
+
+- Incase of same clock for processor and DMA Then the faster will be DMA in data transmission 
+Because processor `Fetch,Decode,Excute` 
+- Incase of DMA and processor accessing the same location at the same time then DMA Will be Higer priority than the processor Beause it's faster than the processor  
+- DMA is considerd as another processor `Can transmit from preipherial to preipherial `
+
+###  DMA Channels 
+Sw priority higher than Hardware priority 
+Hardware priority started from channel 1,2,3 
+SW Priority may be : <br >
+ - Very High 
+ - High 
+ - Medium 
+ - Low 
+
+
+ ### DMA File Configurations 
+ - Source address 
+ - Destination address 
+ - Block length 
+ - element size 
+ - SINK , DINK 
+ - Trigger source 
+ - Repeat, Circular 
+ - Interrupt 
+
+ ### DMA Features : - 
+
+- Save processor time 
+- Faster Than processor in Copy
+
+## DMA as A hardware 
+
+DMA Direct connect to Bus Matrex out of the processor 
+- DMA Able to read and write at the same clock Cycle 
+   <img src="imgs/img128.png" /> 
+</p> <br >
+
+DMA Memory size to transfere between source and destination  : 
+
+As Shown in the second case there is right adjustment `DMA Will deal with th least byte `
+    <img src="imgs/img129.png" /> 
+</p> <br >
+
+# DMA Registers 
+
+## dma INTERRUPT STATUS REGISTER (DMA_ISR)
+- Contains 3 flags with oring to generate GIF for each channel of the 7 channels 
+- The flags are Read only 
+
+<img src="imgs/img130.png" /> 
+</p> <br >
+
+## DMA interrupt flag clear register 
+- Two registers which are atomic access without oring where `0 No effect ` and 1 write 
+- Responsible for clearing the flags 
+<img src="imgs/img131.png" /> 
+</p> <br >
+
+
+## DMA channel configuration register 
+- each register of it responsible for a channel so it's group of registers 7 reg 
+- MEM2ME      1 `Memory to memory transfere `
+<img src="imgs/img132.png" /> 
+</p> <br >
+
+## DMA channle x number of data register (DMA_CNDTRAx)(x=1..7)
+- Prepherial address can be set here 
+<img src="imgs/img133.png" /> 
+</p> <br >
+
+## DMA channle mempry address register (DMA_CMARx)
+- memory  address can be set here 
+<img src="imgs/img134.png" /> 
+</p> <br >
+[Note ] : Incase of memory to memory Use Both  ` DMA_CMARx ` and ` DMA_CNDTRAx ` And the source here will be DMA_CNDTRAx
+`
+
+# Communication protocols :
+
+Dividing system to more than one node or ECU 
+- ECU Electronic control unit 
+## Why we need to divide system into more than one node 
+
+- Complixty `Dividing system into more than one node to reduce complexity`
+      - Provide ease of debugging  
+- Reliability   
+      - if one node have issue the system will still working eg,Lightinning node issue but power train node works 
+- dependency <br > 
+      - Reduction of dependency on ECU's on the system <br > 
+      - Reduction of dependency on the supliers `Tier one suplier ` <br > 
+    - Tier one : Manufacture a specefic system eg , valeo, bosch and  <br>    contenential 
+    - Teir two : supply sw like the os eg vector 
+    - Teir three : supply row material such as pcb supply 
+<img src="imgs/img135.png" /> 
+</p> <br >
+
+conclusion : dividing system into more than one ECU will reduce dependency on the suppliers 
+
+ECU systems on car: 
+
+  - Lightining <br >
+  - Driver chair <br >
+  - Heaters <br >
+
+Conventional netowrk : <br >
+A netwok which need each ECU to be connected to others through wiries 
+
+what you need about each communication protocol : <br >
+- Features eg speed, Noise effect and communication length 
+- Hardware interface 
+- Data frame formate 
+
+Standard protocol :<br >
+A protocol which globally documment <br >
+Non standard protocol :<br >
+- Not implemented in fixed manner between the ECU 
+
+<img src="imgs/img136.png" /> 
+</p> <br >
+
+## Communication protocols specificatiosn 
+### 1-Medium : 
+#### wired vs wireless 
+<img src="imgs/img137.png" /> 
+</p> <br >
+  - speed : in wired and wireless equal because of fiber optics vs infra red are with same near 
+
+  - Cost :
+       - is costly is wired but low cost maintenaince in wireless 
+  - Mobility :
+       - Wireless is moveable but wireless is not 
+  - saftey 
+       - Wireless waves effect on humman health such as mobile antena effect  so wired is more saftey 
+  - security 
+       - Wired is more secured than wireless which can be hacked <br >
+  - Applications :<br >
+Smart home application is suitable for wired for saftey but not easy for fabrication 
+
+### 2-Data Transfere Mod  :
+<img src="imgs/img138.png" /> 
+</p> <br >
+Serial vs parallel <br > 
+ - Ideally parallel communication faster than serial but parallel communiction have some parameters which effect on it 
+ 
+ - Data skewing : 
+
+ <img src="imgs/img139.png" /> 
+</p> 
+  Because of different resistence of wires so there is a lag on communication which remarkable by speed of data transfere 
+
+- Data interfernce `Cross tacking `
+
+ <img src="imgs/img139.png" /> 
+</p> 
+
+because of electromagnetic effect 
+
+- Parallel is complex in wiring 
+- parallel is Higher cost 
+
+How to convert the components which based on large number of wires[LCD, 7segment] into serial 
+
+### 2-N2N Relation  :
+
+Node to node communication 
+
+- Peer to Peer 
+- Master to slave 
+    - Single master single slave 
+    - single master multi slave eg SPI, LIN
+    - Multi Master Multi slave eg I2C
+    - Multi Master No slave `Once some node Take the bus it will be master` 
+    - Multi master no slave `CAN ` <br >
+
+
+### 3-Synchronization  :
+Timing between the nodes to make sure that both are communicating without data loss <br >
+
+- Asynchrounous :
+    - Fixed boad rate between the node but if node has issue then there is will data loss 
+    - eg CAN and UART 
+- Synchronous  :
+    - Through clock for eg sending at rising edge and receiving at falling 
+
+    - Through frame synchronization for eg, Sendding synchronization bits in the frame which holds the speed such as LIN and this will helpfull in incase of clock issue in the controller then it will handle the communication speed according to it's way of understanding of the synchronization speed 
+Advantages of synchrounous communication : 
+ - Dynamic data rate : which allow us to change the speed of communication in run time 
+ - helpfull in incase of clock issue in the controller then it will handle the communication speed according to it's way of understanding of the synchronization speed 
+
+### 4-DataDirection  :
+
+ <img src="imgs/img141.png" /> 
+</p> 
+
+### 5-ThroughPut  :
+
+The amout of usefull data in the frame 
+ - Incase of 100% throughput, then there is will no error checkers
+ - Incase of very low throughput then there is will low communication time through sending a lot of un usefull data  
+ 
+----------------------
+## Parallel to serial converssion [74595 register]
+ <img src="imgs/img142.png" /> 
+</p> 
+
+Controller send the data serially bit by bit then the register will receive the data bit by bit and shift the bit's in the internall register
+The bit is shift according to controller rising edge
+
+- Controler send a bit 
+- controller rising edge to shift clock
+- the bit is shifted 
+- sending rising edge to storage clock 
+- the data transfere from shift register to storage register and if the output is enabled then the data will output to the pins 
+
+## 74595 register 
+if out enable pin is connected to GND then when storage clk receive signal then the data will out from the IC  
+ <img src="imgs/img143.png" /> 
+</p> 
+
+ <img src="imgs/img144.png" /> 
+</p> 
+
+Shift register cascading 
+
+ <img src="imgs/img145.png" /> 
+</p> 
+
+# SPI "Serial peripheral interface"
+
+## Specifications : 
+ - Serial 
+ - Wired 
+ - synchrounous `Sheaed clock wire`
+ - Single master multi slave 
+ - Full douplex 
+ - Throuput 100%
+ - Hardware interface [Daisy chain or Independant slaves]
+ ### Independant slaves 
+  <img src="imgs/img146.png" /> 
+</p> 
+
+____Pins description____ :
+
+<img src="imgs/img147.png" /> 
+</p> 
+
+- SPI Master contains 3 pins only but the slave contains 4 pins `ss Pin`
+
+### Advantages 
+- Simple 
+- Direct 
+### Disadvantages 
+- No broad casting 
+- max number of slaves based on DIO Pins 
+
+### [Notes] : 
+General slave selection techniques : 
+ - Each slave has a unique address Frame = [address + Data] like i2c or NEC Communication  protocol `Lower Throughpot`
+ - Each message Has an id Frame = [Message Id + Data ] Like CAN or LIN `Very smart Technique - Limited to message number - Lower Throughpot at the end`
+ - Hardware Select [Chip select - Slave select ] --Hardware pin for each slave `Higher Throughpot`
+ ### Daisy chain mode :
+
+__Hardware connection__
+
+<img src="imgs/img148.png" /> 
+</p> 
+
+__Advantages__
+- Unlimited number of slaves 
+- No extra Hardware is needed 
+__DisAdvantages__
+- Communication time not constat `Communication time depends on slv position`
+- If slave has an issue the chain will trip `One point failiour`
+- Broad casting is available through daisy chain sending 
+### Frame formate : 
+- Clock polarity : Idle state of the clock at no communication 
+- Colock phase   : Leading edge   : First clock Edge 
+    - Leading edge falling mean High clock polarity 
+    - Polarity low : Idle state of clock low 
+    - Polarity high : Idle state of clock high
+According to the clock phase 
+What to do ar leading edge ?
+ - `0` - Read then write 
+ - `1` - Write then read <br >
+
+### [Maximum distance is 10 cm because of no error checking ] - No error checking but CRC Error checking is availabe in ARM And this is not standard 
+ __Termonology for read write__
+
+<img src="imgs/img149.png" /> 
+</p> 
+
+__Clock polarity and clock phase__
+
+<img src="imgs/img150.png" /> 
+</p> 
+
+__Frame formate__
+
+
+Same clock phase and polarity must be adjusted for both master and slave  and here is example incase of  clk phase  = 1 <br >
+As shown here that notation show when to write there is change and when to read no change 
+
+<img src="imgs/img151.png" /> 
+</p> 
+
+## SPI Configurations 
+- Clock polarity 
+- Clock phase 
+- Clock frequency 
+- Master/slave
+- Data order 
+- Data size to be transfere in ave 8bit in arm 16 bit  or 32 bit 
+
+## M3 SPI REGISTERS 
+As shown here in the data sheet there is two SPI [SPI1-SPI2] peripherials And SPI three not suported in 
+<img src="imgs/img153.png" /> 
+</p> 
+<img src="imgs/img152.png" /> 
+</p>
+
+## Pins  
+
+__SPI1__
+
+<img src="imgs/img154.png" /> 
+</p>
+And can be mapped to other pins side according to AFIO 
+<img src="imgs/img155.png" /> 
+</p>
+ 
+__SPI2__
+SPI2 Can't be mapped in other pins 
+<img src="imgs/img156.png" /> 
+</p>
+ 
+ ### SPI 1 
+ - EXIST IN APB2
+ ## SPI Registers 
+ ###  SPI control register 1 (SPI_CR1) (not used in I2S mode)
+ 
+<img src="imgs/img157.png" /> 
+</p> 
+
+ - BIT 15-14 : Biderictional send and receive at same wire `Not standard `
+ - BIT 13-12 : CRC 
+ - BIT 11-10 : Data sending mode 8 bit or 16 bit
+ - BIT 10  : Incase of independant slave and need to receive only [send receive or receive only]
+ 
+<img src="imgs/img160.png" > 
+</p>
+
+ - BIT 9   : Slave select mode `For arm onley NSS pin will send low value incase of writing slave and this is valid for single slave ` Slave select pin manged by Software 
+ - BIT 8   : SSI pin Internal slave selsect Manged by hardware 
+ - BIT 7   : LSBFIRST least significant bit first 
+
+
+### Verry important note SSI AND SSM bit must be high incase of a maste controller 
+
+<img src="imgs/img164.png" > 
+</p> 
+
+<img src="imgs/img158.png" > 
+</p> 
+
+
+<img src="imgs/img159.png" > 
+</p> 
+
+###  SPI status register (SPI_SR)
+Contains the flags 
+<img src="imgs/img161.png" > 
+</p> 
+
+- BIT7 : BUSY FLAGE : SPI is busy or not
+- Over run : incase of trying to write over data and spi not empty 
+- Under run : incase of trying to read from empty register 
+## SPI control register 2 (SPI_CR2)
+
+For interrupts and DMA AND contains three types of interrupt
+<img src="imgs/img163.png" > 
+</p>  
+
+###  SPI data register (SPI_DR) 
+This register to send 8 bit or 16 bit data 
+ <img src="imgs/img162.png" >  
+</p> 
+
+
+
+
+-----------------------
+## Display 
+ <img src="imgs/img166.png" >  
+</p> 
+
+ <img src="imgs/img165.png" >  
+</p> 
+
+LCD : Based on halogen or florocent light and have electrodes for bais volt 
+LED : Light source based on LED
+TFT : Thin film transostr 
+----------------------
+# TFT 
+ <img src="imgs/img168.png" >  
+</p> 
+Each pixle contains three colors sub pixle <br >
+
+# Touch screen : 
+
+ <img src="imgs/img167.png" >  
+</p> 
+Is a Display with touch pannel this touch pannel may be ressistive or capacitive <br >
+The touch pannel is seperate from the screen 
+
+There is two importanat terms : 
+Intenesty : the light strength of the back light source 
+Contrast  : The light strength of the pixle 
+
+# LCD Module 
+ <img src="imgs/img169.png" >  
+</p> 
+
+# TFT Wiring 
+ <img src="imgs/img170.png" >  
+</p> 
+
+The screen contains controller built in FROM SITRONICS `ST7735S` SPI Communication based And have specific pins <br >
+VCC : Supplay voltage <br >
+sck : Serial clock <br >
+sda : Serial data `MOSI`<br >
+CS : Slave select active low <br >
+Reset : for intialization sequence <br >
+A0 : To send command or data <br >
+Note there is SD Card pins for spi communication 
+
+The fastest speed of tft controller is 15Mhz 
+## TFT Specifications 
+
+LCD = 1.8 Inch 
+Number of pixels = 128 *160 = 20480 
+
+ <img src="imgs/img171.png" >  
+</p> 
+
+Each pixel contain three sub pixle and each sub pixel contain number of bits to controll it's number of colours acording to the standard color coding : <br >
+- RGB 444 # Colors = 2^12  4k Screen
+
+ <img src="imgs/img172.png" >  
+</p> 
+
+### Memory callculation for a picture   
+
+ <img src="imgs/img173.png" >  
+</p> 
+
+### SPI Configuration 
+
+TFT Clock write at falling edge and read at rising so clock polarity = 1 and clock pahase = 1 
+
+ <img src="imgs/img174.png" >  
+</p> 
+
+## SPI Init sequence 
+
+- Reset pulse will sleep 
+- slpout `sleep out cpmma-nd 0x11 `
+
+ <img src="imgs/img178.png" >  
+</p> 
+
+- delay 150ms 
+- COLMD `Colour mode ` the souported colours are `0x3A` To write command  + [0x03-0x05-0x06]
+
+ <img src="imgs/img179.png" >  
+</p> 
+
+- desplay on 
+
+
+ <img src="imgs/img180.png" >  
+</p> 
+
+## Reset pulse sequence
+ <img src="imgs/img181.png" >  
+</p> 
+
+## After TFT intailized you will see 
+
+ <img src="imgs/img182.png" >  
+</p> 
+
+## Display picture 
+
+The address counter start at 0,0 oixel then increemnt in x and then start to increase to y after each row completed 
+There is two main command to set the position 
+
+ <img src="imgs/img183.png" >  
+</p> 
+
+- Set x address 0x2A : [X Start in Two byte[Most byte send first ][least byte ] ]    [X End in two byte[Most byte send first ][least byte ]  ]
+- Write the data 
+## How to resize the image 
+ <img src="imgs/img184.png" >  
+</p>
+
+## How to Convert image to array 
+
+ <img src="imgs/img185.png" >  
+</p>
+
+
+ <img src="imgs/img186.png" >  
+</p>
+
+
+ <img src="imgs/img187.png" >  
+</p>
+
+
+/*nOT COMPLETED YET */
+
+
+# IOT 
+
+## Network
+- it's a net which contain a set of Nodes 
+- Internet Allow nodes to communicate with each others globally 
+## How internet work 
+ICAN : Organization which manage communicaion between nodes through dividing the world into 5 main parts according to Region internet service provider ISP Which is ICAN And provide to main 5 five regions and each region provide to local companies 
+ <img src="imgs/img188.png" >  
+</p>
+
+For example AFrinic has internet service providers like `we - vodafone ` and so on through modem which may be wired through telephone or wirless through 3G-4G-5G
+- Each modem has IP `How to distripute IP's To the whole world`
+
+Router contains modem - And router is connected to the internet through modem wired or wirless <br >
+devices which will access interrnet contains `NIC` Network interface controller and NIC May be wired Ether net or wireless wifi and each device connected will has ocal ip to be connected to the router to save ip's for ICAN <br >
+
+ <img src="imgs/img189.png" >  
+</p>
+
+Another solution to save IP Is called dynamic IP by changing the ip when the router is restarted or through a time 
+<br >
+[Note] IP is a mix of four bytes B.B.B.B 
+<br >
+[Note] There is a service which is called no ip which is based on a DNS without ip because there is  a script which update and link the ip with the DNS
+ 
+ <img src="imgs/img203.png" >  
+</p>
+
+## HOW TO Connect to internet 
+
+- wifi module sim 800 which is 2G
+- NIC Which may be eathernet enc28j60
+- NIC Which provide WIFI ESP8266 
+
+ <img src="imgs/img190.png" >  
+</p>
+
+## Client server 
+
+ <img src="imgs/img191.png" >  
+</p>
+
+when The cleint need to communicate with a server for example user need to communicate with Facebook so face book need to have a static ip bye it and to map the ip to the name of the server the server need to have `DNS` Domain name system  
+
+- Example open any server for example yallakora.com 
+- Press F12 
+- Go to network 
+Then you can find the ip of the server 
+ <img src="imgs/img192.png" >  
+</p>
+
+### Main communication protocols to be able to communicate with servers
+- HTTP 
+- FTP 
+Front End <br >
+- HTML 
+- CSS
+- Javascript 
+
+Back end 
+
+- PHP 
+- Python 
+- Mysql
+
+--------------------------
+IOT : 
+Internet of things which allow you to be able to controll any thing globally 
+
+How to develop IOT 
+
+- Web development 
+- Embedded application 
+
+## Frame works :- 
+- Thing speak 
+- Microsoft AZURE
+- CISCO 
+
+You can make it yourself Nativly By Making Embedded device and connect it to website 
+
+
+Needs to make website : 
+- Know HTML for front end 
+- Know php for back end  
+
+
+# website implementation 
+
+1 - Server : By finding hosting service which will provide a space with IP 
+or bying static IP and making my PC as a server 
+2 - Domain : By mapping the static ip with the name domain like facebook 
+
+<br >
+Freewebhostingare   `freewha`
+
+ <img src="imgs/img193.png" >  
+</p>
+and then proceed 
+ <img src="imgs/img194.png" >  
+</p>
+The following page will contains all of your data save it 
+ <img src="imgs/img195.png" >  
+</p>
+
+ 
+
+ when you search for your server Domain you will find the following 
+
+  <img src="imgs/img196.png" >  
+</p>
+
+- To start browsing you use HTTP Request 
+- To uppload data to the server use FTP Request 
+  <img src="imgs/img197.png" >  
+</p>
+
+How to uppload the data :
+- Use FikeZILA Application to be able to connect and uppload to the server through FTP 
+
+  <img src="imgs/img198.png" >  
+</p>
+
+The part to the left is PC Files and the part to the right is the server 
+
+  <img src="imgs/img199.png" >  
+</p>
+
+## Server Enery point is like main in C and may be HTML or PHP And is called idex 
+
+to uppload file to the server douple clik on it
+
+## HTML Page 
+  <img src="imgs/img202.png" >  
+</p>
+
+- HTML is scripting language to show some scripts on the page 
+- HTML is a set of tags  
+- HTML Divide into two main parts 
+    - Title 
+    - Body 
+- As shown below  
+  <img src="imgs/img200.png" >  
+</p>
+<br >
+
+
+A head is contains title 
+
+  <img src="imgs/img201.png" >  
+</p>
+
+
+Alwayes refresh in fileZilla when update any file  
+
+Body element 
+
+- Heading from H1 To H6  `<h1 >      </h1>`
+- Paragraph `<p>    </p>`
+- Refference or link to make a button  `<a>  </a>`
+- Attribute to edit in the tag and add parameter `<a href="script.php>status=on">  press here </a> ` the link may be relative path to php page or any link to website and also we can pass status on or off for example to pass parameter to php page  
+- To add image to html page `<img src="" width="" height = ""> `
+
+## PHP
+When pressing on HTML link then it will call php page 
+```
+<?php
+
+echo ("Hello from php");
+$x =                          --------> php variable 
+$arr[]                        --------> php array 
+?>
+```
+- PHP Contains by default array which is called `$_GET[Parameter name ]` this array contains all the parameters 
+- a function to check if GET array contains any thing is called `isset($_GET(status))`
+- To go to any location you can use a function `header("Location: index.html")`
+
+## Reference 
+www.w3schools.com
+
+----------------
+ 
+-  Embedded system may work as a server which almost linux based server which control the services 
+-  Embedded system may be client to connect with external server to apply on the interfaces 
+ <img src="imgs/img204.png" >  
+</p>
+
+How to communicate between the server and the embedded application : 
+- report the status of the stimulas from php to .txt file `$file = fopen("status.txt" , "w")`
+- write thr status to the .txt file `fwrite($file,"1")`
+- Close the file `fclose($file)`
+- uppload .txt file to file zella and edit writing permission 
+
+<img src="imgs/img205.png" >  
+</p>
+
+# WIFI connection 
+Espressef : is a company which provide esp8266 which microcontroller contains wifi module and programmable using LUA programming language 
+ <img src="imgs/img206.png" >  
+</p>
+
+## Module pins 
+
+
+ <img src="imgs/img207.png" >  
+</p>
+
+- The module contain's flash memory with firmware support AT commands 
+ 
+ ## HOW to connect to esp8266 
+
+ - Connect through putty 
+ - edit the port as your in device manger
+ - edit speed to 115200
+
+  <img src="imgs/img208.png" >  
+</p>
+
+## putty command 
+
+```
+AT   --- Enter then  CTRL+J to send \r(Enter) \n (ctrl + j)
+ATE0 ---> No ecco 
+ATE1 ---> Eco works 
+AT+RST  ---> REST The module 
+AT+CWMODE=1 ---> Station mode 
+AT+CWJAP_CUR="WIFINAME","PASS" ----> Enter network user and passwod to connect
+AT_CIPSTART="Mode","IP","PORT"
+AT+CIPSEND=Number of char to be send enclodded \r\n Then send the conttent
+```
+## Module moods 
+- station mode `module connect to the router directery  `
+- access point mode  `To exted the connection `
+
+ <img src="imgs/img209.png" >  
+</p>
+
+[Note] The module connect to 2G and not cabable to connect with 5G 
+
+## Connection mode 
+- TCP : Based on handshaking
+- UDP : No hand shaking NoACK Faster
+
+Port number: To pass data to specific application example 80 To know the port of any server press F12-> Network -> F5 
+
+ <img src="imgs/img210.png" >  
+</p>
+
+## To get a .txt file variable 
+
+- `GET ServerLink/status.txt `
+- When wifi receive info `+IPD`
+
+
+-------------------------------------
+# Bootloader 
+
+## Basic concepts
+
+Embedded system consist of the following : 
+- Processor 
+- SRAM
+- FLASH
+- IO
+
+ <img src="imgs/img211.png" >  
+</p>
+
+Any processor has it's own ISA `Instruction set architecture `
+
+ <img src="imgs/img212.png" >  
+</p>
+
+- Main tools which is used in C Tool chain 
+ <img src="imgs/img213.png" >  
+</p>
+
+- Preprocessor : responsible for replacing any # and text replacement   [Targent independent ] except # pragma  and then produce intermidiate file 
+ <img src="imgs/img214.png" >  
+</p>
+
+- Compiler : responsible for converting C code into assembly code [file.asm] and is target dependent 
+    - 1)Tokenizer  : remove wite spaces and make tokens from the code `Collect meaning full syntax and remove un used ones `
+ <img src="imgs/img215.png" >  
+</p>
+    
+  - 2)Syntax analysis : to make that all tokens are right  
+  - 3)parsing         : Converting the C code into available assembly instructions
+      - Parsing issues : the nedded functions address is mapped in symbol table 
+
+       <img src="imgs/img216.png" >  
+</p>
+ 
+  - 4)Optimizer  
+
+   <img src="imgs/img217.png" >   
+
+   [Note]  : To chek the mapped assembly to the c code you can check that in the .lst file and here how you can generate it and then build the project 
+     <img src="imgs/img218.png" >   
+  After generating of the listing file you can the following 
+     <img src="imgs/img219.png" >   
+  Compiler is a target dependant because of the parser which convert the code into assembly 
+
+- Assembler :  A tool whih receive assembly file and produce object file, Convert assembly file into binary code [Assembler is target dependeant ]
+
+- Linker : 
+    - 1.1 Object Verfication `Through Linking symbol tables and check compatabality Make sure that Every needed object is providded or give undefined reference to ...`
+    - Every providded object is providded only once or give multiple decleration of ...
+    - Static varible can't be externed because it's not providded by symbol table 
+    - 1.2 Linking Excution  
+    all .c file is compiled and produce object file 
+ <img src="imgs/img220.png" > 
+  
+  There a input nedded to linker script for all the section 
+   <img src="imgs/img221.png" > 
+  
+  ## Facts 
+  - Hex file is download in flash 
+  - Every file is compiled alone without any information about other files so every object get logical address 
+
+ <img src="imgs/img222.png" > 
+  
+  - Linker script is a file whih define the the size of each section 
+  - Linker script define the sections of the code 
+  - lINKer is not target dependant but linker script is target dependenat because it define the size of target memory 
+  - Linker output 
+Any variable change in runtime will be loadded from flash to ram 
+- ALOCATABLE SECTION : A Section which allocated in flash and not will be loadded int ram  
+- LOADABLE SECTION :  A section which will be allocated into flash and loadded to ram   
+- LMA : Loadable memory address `Address only in RAM `
+- VMA : Virtual memory address `Address in flash and address in RAM `<br >
+Ex : ``` int x = 100 ``` in this example x will take the same space in both flash and RAM <br >
+To solve this issue set the variable as unintialized 
+
+  <img src="imgs/img224.png" >
+ <img src="imgs/img223.png" > 
+ 
+ `WRONG! Edit the array of 500 because it's will be in .bss`
+
+ - Don't intialize global variable and intialize it in RUNTIME 
+
+  <img src="imgs/img225.png" > 
+
+  
+One of the input files in the hex file is startup code which exist in init section 
+<br >
+[What is difference between .elf and .bin] : .elf contain more information about debugging 
+
+# Startup code : 
+- Reset vector : First address exist in flash memory 
+- Main exist between two main codes `Startup code and Finalizing Code`
+  <img src="imgs/img226.png" > 
+- Startup code exist in avr as object file 
+- Arm start code exist in the following place 
+
+  <img src="imgs/img227.png" > 
+- Startup code in ARM start rcc with 72 mega 
+- Startup code intialize all un intialized code with 0 and can be intialized with any value 
+- Linker responsible for giving undefined reference to main 
+- Startup code load .data section from flash to ram  
+- Reserve .bss section into ram and intialized it 
+- intialize vector table `Not do this step incase of static vector table `
+- Some cpu register intialization example stack pointer 
+- Call The entery point example main 
+- exit code provide `while(1) ;`
+
+## Linker script 
+  <img src="imgs/img228.png" > 
+
+ - elements of linker script 
+ - RAM(XRW)  --->(XRW `Read write Only `)
+ - Flash(rx)  --->(R ` Read Only `)
+  <img src="imgs/img229.png" > 
+ 
+
+ ## Conclussion 
+
+  <img src="imgs/img230.png" > 
+ 
+- Reset vector : is the first code excuited after reset 
+- Power off/on : Clear volatile memory 
+- Hard reset   : Reset through applying low level on Rest pin and non maskeable and main target to move programe counter PC to Reset vector 
+- Soft reset   : Reset by software ware through "swr" instruction and mainly used incase of missing information as protection behaviour implement by a specific bit 
+- Worm reset   : Reset by peripherial such as watch dog timer 
+- cold reset   : complete removal of power and restart 
+### Reset routine 
+A code which you need to excuite before reset for example saving a specific info before reset micro controller call function which called `Reset_isr()` Incase of [soft reset - warm reset - Hard reset ]

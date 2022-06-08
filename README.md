@@ -2352,3 +2352,208 @@ One of the input files in the hex file is startup code which exist in init secti
 - cold reset   : complete removal of power and restart 
 ### Reset routine 
 A code which you need to excuite before reset for example saving a specific info before reset micro controller call function which called `Reset_isr()` Incase of [soft reset - warm reset - Hard reset ]
+- Brownout detector or low power detector : 
+    - Nominal voltage : is the operating voltage 
+    - Minimal voltage : Minimum voltage for micro controller to operate at
+    - Incase of voltage reduce than minimal voltage then a shutdown sequence is implemented before shutdown 
+
+      <img src="imgs/img231.png" > 
+
+## why main receive argument in startup code 
+
+When defining a function which receive argument or not define it as weak function in linker through 
+```
+both the following are compiler directives 
+#pragma  weak                   >> providded by windows  
+__ attributr __((weak))         >> providded by linux 
+
+```  
+#pragma and attributes are non standard because it's change by changging of the compiler  
+<img src="imgs/img232.png" > 
+Terminologies 
+ 
+ -  Routine or code or algorithm is part of code 
+ -  Subroutine or method is a function 
+ -  Development : Writing a code 
+ -  Building   : Compile &Link 
+ -  Flashing   : Download the code 
+ -  Profilling : Getting information about code [Like code size - excution time ] `We can use profilling tool which is called tracalizer which compatable with safe rtos `
+ -  Debugging  : Searching for a bug 
+ 
+ [ Note ] : Gitter is a deviation timming between tasks in OS at scheduling point `Saftey critical tasks excuites first`
+
+ # Flashing 
+ - OFF Circuit programming 
+ - In Circuit programming 
+ - In application programming 
+
+## OFF Circuit programming : 
+
+  - To burn hex file a flasher or burner or programmer is needed and then micro controller removal from it's environment is needed `Because burnner at off circuit programming contains flash driver ` 
+  - This method is not handy and not flexable and time consumming 
+  - The role of processor in this case is doing nothing  
+  <img src="imgs/img233.png" >
+
+  
+## INN Circuit programming : 
+
+ - Provide the ability to flash the ECU in it's place  through communication protocol such as SPI or `SW`like i2c, Flash driver is builtin the controller `And Flash driver has specific communication protocol` 
+- The controller in this case is costly because it's contain flash driver  
+- The role of processor at this state is working and handling the flashing of sw 
+- Flash driver = Flash programmer =  Flash interface = In circuit programming = On chip programmer  
+   <img src="imgs/img234.png" >
+
+## In application programming 
+Needs : Incase of There is different targets with different flashing protocols, Then communication through single common communication protocol when the code received in the controller then controller internally will flash the code, In this case the flash will divide into two sections [The flashed code and the programmed code ] 
+ - The reciving code is the bootloader code which is responsible for receiving a code and flash it 
+
+   <img src="imgs/img235.png" >
+The processor role with bootloader excuiting bootloader 
+   <img src="imgs/img236.png" >
+
+# Bootloader 
+Needs : Incase of There is different targets with different flashing protocols  
+
+- First code excuited is the bootloader code withtimeout mechanism to check if there is a software need to be flashed, and if no sw available then the bootloader will jump to the application. 
+- If the application need to jump to bootloader then the reset is needed Soft reset for example 
+- Bootloader is an optional in the code 
+- Microcontroller which has no flash driver can't have bootloader
+- Applying Bl concept there is 2 hex file upploadded to the controller 
+- Bootloader is flashed using in circuit programming
+- Incase there is bootloader also there is two startup codes one for bootlodaer and secod for the application 
+- Bootloader startup code is the first code to run 
+   <img src="imgs/img237.png" >
+- at Rest vector exist bootloader to run before application and application startup code 
+- When there is a need to update bootloader you can make something which called updater to update bootloader and then bootloader will update the application 
+
+   <img src="imgs/img238.png" >
+# Bootloader algorithm 
+
+ <img src="imgs/img239.png" >
+
+# Bootloader architecture 
+  After finishing the following cycle bootloader will jumb to application 
+   <img src="imgs/img240.png" >
+
+# Bootloader implementation 
+
+- Flash memory will be dividded into two main parts `Application - Bootloader`
+ <img src="imgs/img251.png" >
+
+- Bootloader is flashed by burner 
+- flash start from page0 to page 63 in stm32 
+- First address is `0x08000000`
+- Page size is 1K
+- In our case we will reserve from page0 to pag 3
+ <img src="imgs/img252.png" >
+
+-  <img src="imgs/img253.png" > 
+
+- Labtop will send the code using usb serial to microcontroller to bootloader section which is uart based 
+
+  <img src="imgs/img254.png" > 
+
+# Reading of .hex format 
+
+  <img src="imgs/img256.png" > 
+
+- Character count : the first two digits are charater are number of bytes in this record in hex decimal and `each byte will represent two digits of data ` 
+
+  <img src="imgs/img255.png" > 
+
+-Address : The address of record to be stored in the memory is the next 4 digits, And contain `issue because it's 4 digit address and arm is 32 digit ` so the address is send on two records 
+
+- Record type :  
+    - 00 Data record to be flashed 
+    - 01 End of file and is the last record 
+        <img src="imgs/img261.png" > 
+    - 04 To set high part of the address 
+      <img src="imgs/img259.png" > 
+      <img src="imgs/img263.png" > 
+
+    - 05 Incremental address to increment over the current address without high and low part of 04 
+      <img src="imgs/img262.png" > 
+as shown in the following the first address in flash `0x0800 000 `
+      <img src="imgs/img260.png" > 
+- Data :
+
+- Check sum 
+- Reord flashing to flash 
+  <img src="imgs/img257.png" > 
+    <img src="imgs/img258.png" > 
+
+----------------------------
+# Linker script 
+  <img src="imgs/img266.png" >
+
+Application sw sections in flash 
+
+  <img src="imgs/img264.png" > 
+
+Bootloader sw sections in flash 
+
+  <img src="imgs/img265.png" > 
+
+# Bootloader algorithm 
+
+  <img src="imgs/img267.png" > 
+
+- Wiring to flash bootloader algorithm 
+  <img src="imgs/img268.png" > 
+
+- Note `There is a tool which send the record using UART and there is hand shaking is needed between bootloader and the tool after receiving each record `
+
+  <img src="imgs/img269.png" > 
+
+# Bootloader architecture 
+
+  <img src="imgs/img270.png" > 
+
+## FPEC 
+ Able to provide the following 
+
+  <img src="imgs/img271.png" > 
+
+ - MUST flash at erased half word sections 
+ - HSI Must be enabled 
+
+
+# common questions
+
+- CMSIS : Cortex microcontroller interface standard contains the COTS and standard 
+
+
+- Static and dynamic linking 
+- static 
+  <img src="imgs/img272.png" >
+- Dynamic linking 
+ Link in run time and file1.exe get some functionalities from file2.exe `configurations`
+   <img src="imgs/img273.png" > 
+
+# ARM Registers 
+
+- General purpose registers 
+
+  - R0:R15
+  - R0:R12 Geberal purpose registers GPR'S 
+  - R13 Stack pointer 
+  - R15 Program counter
+  - R13 Stack pointer 
+  - R14 link register : Hold PC value to be returned after function call 
+
+- Special function register 
+
+  - PSR : Processor status register hold status bits
+  - Control register :  
+        - Privalage mode : to be able to write in any register
+        - Un privilage mode : Not able to write in any place
+        - Isr works in privilage and using isr switching occur from unpriv to priv <br >
+GIE registers   
+
+  - PRIMSK Contains only one bit and able to disable all interrupts exccept `RESET - NMI - HARD FULT `
+  
+   <img src="imgs/img276.png" > 
+
+  - FAULTMASK : Able to disable All interrupt exccept `RESET - NMI `
+
+  - Base priority : set priority limit and the over this limit interrupts are disabled 

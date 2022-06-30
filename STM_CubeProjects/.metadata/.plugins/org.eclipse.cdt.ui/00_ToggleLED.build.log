@@ -1,0 +1,20 @@
+22:09:05 **** Incremental Build of configuration Debug for project 00_ToggleLED ****
+make -j4 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F401CCUx -DSTM32 -DSTM32F4 -c -I../Inc -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/00_ToggleLED/LIB" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/00_ToggleLED/HAL/Inc" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/00_ToggleLED/MCAL/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "00_ToggleLED.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Ahmed Khaled Hammad\Documents\ARM_BlackPill\STM_CubeProjects\00_ToggleLED\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="00_ToggleLED.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 00_ToggleLED.elf
+ 
+arm-none-eabi-size   00_ToggleLED.elf 
+arm-none-eabi-objdump -h -S  00_ToggleLED.elf  > "00_ToggleLED.list"
+   text	   data	    bss	    dec	    hex	filename
+   2056	      8	   1568	   3632	    e30	00_ToggleLED.elf
+arm-none-eabi-objcopy  -O ihex  00_ToggleLED.elf  "00_ToggleLED.hex"
+Finished building: default.size.stdout
+ 
+Finished building: 00_ToggleLED.hex
+Finished building: 00_ToggleLED.list
+ 
+ 
+
+22:09:07 Build Finished. 0 errors, 0 warnings. (took 2s.232ms)
+

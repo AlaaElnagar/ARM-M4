@@ -1,0 +1,91 @@
+
+
+
+
+#include "LSTD_TYPES.h"
+#include "LBIT_MATH.h"
+
+#include "MRCC_interface.h"
+#include "MGPIO_interface.h"
+#include "MSYSTICK_Interface.h"
+#include "MUSART_Interface.h"
+
+#include "MFPEC_interface.h"
+#include "PARSER_interface.h"
+
+volatile u8 u8RecBuffer[100] = {0}   ;
+volatile u8 u8RecCounter     =  0    ;
+volatile u8 TimeOutFlag      =  0    ;
+volatile u8 u8BLWriteReq     =  1    ;
+
+typedef void (*Function_t)(void) ;
+
+Function_t  Addr_To_Call = 0;  // void (*Addr_To_Call)(void)
+
+void Func_CallBack(void){
+
+	/*Some Code*/
+
+	TimeOutFlag = 1 ;
+
+	#define SCB_VTOR  *((volatile u32 *)0xE000ED08)
+
+	SCB_VTOR     = 0x08001800 ;
+
+	Addr_To_Call = *(Function_t *)0x08001804 ;
+
+	Addr_To_Call();
+
+}
+
+void main (void){
+
+	u8 LOC_u8RecStatus = 0;
+
+	MRCC_voidInitSysClock();//HSI
+	MRCC_voidEnablePerClock( MRCC_APB2 , MRCC_GPIOA_EN  );
+	MRCC_voidEnablePerClock( MRCC_APB2 , MRCC_USART1_EN );
+	MRCC_voidEnablePerClock( MRCC_AHB  , MRCC_FPEC_EN   );
+
+	MGPIO_voidSetPinDirection( MGPIO_PORTA , MGPIO_PIN9  , MGPIO_OUTPUT_2MHZ_AFPP );
+	MGPIO_voidSetPinDirection( MGPIO_PORTA , MGPIO_PIN10 , MGPIO_INPUT_FLOATING   );
+
+	MUSART1_voidInit();
+	MSTK_voidInit   ();
+
+	MSTK_voidSetIntervalSingle( 15000000 , Func_CallBack );
+
+	while( TimeOutFlag == 0 ){
+
+		LOC_u8RecStatus = MUSART1_u8ReceiveCharSync(&u8RecBuffer[u8RecCounter]);
+
+		if( LOC_u8RecStatus == 1 ){
+
+			MSTK_voidStopTimer();
+
+			if( u8RecBuffer[u8RecCounter] == '\n' ){
+
+				if( u8BLWriteReq == 1 ){
+
+					MFPEC_voidEraseAppArea();
+					u8BLWriteReq = 0 ;
+
+				}
+
+				PARSE_voidParseRecord( u8RecBuffer );
+				MUSART1_voidSendSrtingSynch((u8 *)"ok");
+				u8RecCounter = 0 ;
+
+			}
+			else{ u8RecCounter++ ; }
+
+			if( u8RecBuffer[8] == '1' ){
+
+				MSTK_voidSetIntervalSingle( 1000000 , Func_CallBack );
+			}
+
+		}
+
+	}
+
+}

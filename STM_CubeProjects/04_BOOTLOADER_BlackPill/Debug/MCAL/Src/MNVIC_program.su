@@ -1,0 +1,6 @@
+MNVIC_program.c:204:6:MNVIC_VidEnablePeripheral	16	static
+MNVIC_program.c:209:6:MNVIC_VidDisablePeripheral	16	static
+MNVIC_program.c:216:6:MNVIC_VidSetPending	16	static
+MNVIC_program.c:223:6:MNVIC_VidClearPending	16	static
+MNVIC_program.c:230:6:MNVIC_u8GetActive	24	static
+MNVIC_program.c:238:6:MNVIC_VidSetPriority	24	static

@@ -1,0 +1,9 @@
+MGPIO_program.c:62:6:MGPIO_voidSetPinMode	16	static
+MGPIO_program.c:88:6:MGPIO_voidSetPinOutPutType	16	static
+MGPIO_program.c:116:6:MGPIO_voidSetPinOutSpeed	24	static
+MGPIO_program.c:141:6:MGPIO_voidSetPullType	24	static
+MGPIO_program.c:165:4:MGPIO_u8ReadData	24	static
+MGPIO_program.c:198:6:MGPIO_voidWriteData	16	static
+MGPIO_program.c:250:6:MGPIO_voidPinLock	16	static
+MGPIO_program.c:309:6:MGPIO_vDirectSetReset	16	static
+MGPIO_program.c:345:6:MGPIO_voidSetPinAltFn	16	static

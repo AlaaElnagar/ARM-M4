@@ -1,0 +1,23 @@
+06:08:29 **** Incremental Build of configuration Debug for project 02_ToggleLED_SysTick ****
+make -j4 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F401CCUx -DSTM32 -DSTM32F4 -c -I../Inc -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/02_ToggleLED_SysTick/MCAL/Inc" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/02_ToggleLED_SysTick/LIB" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/02_ToggleLED_SysTick/HAL/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "02_ToggleLED_SysTick.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Ahmed Khaled Hammad\Documents\ARM_BlackPill\STM_CubeProjects\02_ToggleLED_SysTick\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="02_ToggleLED_SysTick.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 02_ToggleLED_SysTick.elf
+ 
+arm-none-eabi-size   02_ToggleLED_SysTick.elf 
+arm-none-eabi-objdump -h -S  02_ToggleLED_SysTick.elf  > "02_ToggleLED_SysTick.list"
+   text	   data	    bss	    dec	    hex	filename
+   2284	      8	   1568	   3860	    f14	02_ToggleLED_SysTick.elf
+arm-none-eabi-objcopy  -O ihex  02_ToggleLED_SysTick.elf  "02_ToggleLED_SysTick.hex"
+arm-none-eabi-objcopy  -O binary  02_ToggleLED_SysTick.elf  "02_ToggleLED_SysTick.bin"
+Finished building: default.size.stdout
+ 
+Finished building: 02_ToggleLED_SysTick.list
+Finished building: 02_ToggleLED_SysTick.hex
+Finished building: 02_ToggleLED_SysTick.bin
+ 
+ 
+ 
+
+06:08:31 Build Finished. 0 errors, 0 warnings. (took 2s.157ms)
+

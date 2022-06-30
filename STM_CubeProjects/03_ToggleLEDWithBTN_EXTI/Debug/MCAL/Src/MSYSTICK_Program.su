@@ -1,0 +1,6 @@
+MSYSTICK_Program.c:63:6:SysTick_Handler	8	static
+MSYSTICK_Program.c:83:6:MSTK_voidInit	4	static
+MSYSTICK_Program.c:101:6:MSTK_voidStart	16	static
+MSYSTICK_Program.c:125:6:MSTK_voidINTStatus	16	static
+MSYSTICK_Program.c:143:4:MSTK_u8ReadFlag	4	static
+MSYSTICK_Program.c:160:6:MSTK_voidSetCallBack	16	static

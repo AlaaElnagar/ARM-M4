@@ -1,0 +1,3 @@
+PARSER_program.c:58:6:PARSE_u8AsciToHex	24	static
+PARSER_program.c:87:6:PARSE_voidParseData	24	static
+PARSER_program.c:132:6:PARSE_voidParseRecord	16	static

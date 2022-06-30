@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;BOOTLOADER_STM32BluePill/Startup/startup_stm32f103c8tx.s&apos; to &apos;startup_stm32f103c8tx.c&apos;" description="Rename resource &apos;startup_stm32f103c8tx.s&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Startup/startup_stm32f103c8tx.s" name="startup_stm32f103c8tx.c" stamp="1656399568203" updateReferences="true"/>
+</session>

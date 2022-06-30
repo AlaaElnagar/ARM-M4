@@ -1,0 +1,7 @@
+21:00:17 **** Incremental Build of configuration Debug for project BOOTLOADER_STM32BluePill ****
+make -j4 all 
+make: *** No rule to make target '../Startup/startup_stm32f103c8tx.s', needed by 'Startup/startup_stm32f103c8tx.o'.  Stop.
+"make -j4 all" terminated with exit code 2. Build might be incomplete.
+
+21:00:18 Build Failed. 1 errors, 0 warnings. (took 430ms)
+

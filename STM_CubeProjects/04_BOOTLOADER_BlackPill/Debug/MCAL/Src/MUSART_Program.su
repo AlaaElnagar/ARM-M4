@@ -1,0 +1,6 @@
+MUSART_Program.c:59:6:MUART_vInit	16	static
+MUSART_Program.c:126:6:MUART_vEnable	16	static
+MUSART_Program.c:145:6:MUART_vDisable	16	static
+MUSART_Program.c:165:6:MUART_u8SendData	24	static
+MUSART_Program.c:187:4:MUART_u8ReadData	24	static
+MUSART_Program.c:205:10:MUART_GetHandler	24	static

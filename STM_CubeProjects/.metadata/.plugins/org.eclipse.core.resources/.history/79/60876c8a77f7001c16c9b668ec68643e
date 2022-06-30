@@ -1,0 +1,26 @@
+/*
+ * MFPEC_private.h
+ *
+ *  Created on: Dec 23, 2020
+ *      Author: DELL
+ */
+
+#ifndef MFPEC_PRIVATE_H_
+#define MFPEC_PRIVATE_H_
+
+
+typedef struct{
+
+	volatile u32 ACR      ;
+	volatile u32 KEYR     ;
+	volatile u32 OPTKEYR  ;
+	volatile u32 SR       ;
+	volatile u32 CR       ;
+	volatile u32 OPTCR    ;
+
+}FPEC_Type;
+
+#define MFPEC  ((volatile FPEC_Type*) 0x40023C00)
+
+
+#endif /* MFPEC_PRIVATE_H_ */

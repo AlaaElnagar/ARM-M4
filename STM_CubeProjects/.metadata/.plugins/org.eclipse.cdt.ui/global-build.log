@@ -1,0 +1,25 @@
+18:08:42 **** Incremental Build of configuration Debug for project 04_BOOTLOADER_BlackPill ****
+make -j4 all 
+arm-none-eabi-gcc "../MCAL/Src/MFPEC_program.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F401CCUx -DSTM32 -DSTM32F4 -c -I../Inc -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/04_BOOTLOADER_BlackPill/LIB" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/04_BOOTLOADER_BlackPill/MCAL/Inc" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/04_BOOTLOADER_BlackPill/HAL" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"MCAL/Src/MFPEC_program.d" -MT"MCAL/Src/MFPEC_program.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "MCAL/Src/MFPEC_program.o"
+../MCAL/Src/MFPEC_program.c: In function 'MFPEC_voidEraseAppArea':
+../MCAL/Src/MFPEC_program.c:62:3: warning: implicit declaration of function 'MFPEC_voidPageErase'; did you mean 'MFPEC_voidSectorErase'? [-Wimplicit-function-declaration]
+   62 |   MFPEC_voidPageErase( LOC_u8Iterator );
+      |   ^~~~~~~~~~~~~~~~~~~
+      |   MFPEC_voidSectorErase
+arm-none-eabi-gcc -o "04_BOOTLOADER_BlackPill.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Ahmed Khaled Hammad\Documents\ARM_BlackPill\STM_CubeProjects\04_BOOTLOADER_BlackPill\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="04_BOOTLOADER_BlackPill.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 04_BOOTLOADER_BlackPill.elf
+ 
+arm-none-eabi-size   04_BOOTLOADER_BlackPill.elf 
+arm-none-eabi-objdump -h -S  04_BOOTLOADER_BlackPill.elf  > "04_BOOTLOADER_BlackPill.list"
+arm-none-eabi-objcopy  -O ihex  04_BOOTLOADER_BlackPill.elf  "04_BOOTLOADER_BlackPill.hex"
+   text	   data	    bss	    dec	    hex	filename
+    676	      8	   1568	   2252	    8cc	04_BOOTLOADER_BlackPill.elf
+arm-none-eabi-objcopy  -O binary  04_BOOTLOADER_BlackPill.elf  "04_BOOTLOADER_BlackPill.bin"
+Finished building: default.size.stdout
+ 
+Finished building: 04_BOOTLOADER_BlackPill.list
+Finished building: 04_BOOTLOADER_BlackPill.hex
+ 
+Finished building: 04_BOOTLOADER_BlackPill.bin
+ 
+ 

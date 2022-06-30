@@ -1,0 +1,23 @@
+07:19:23 **** Incremental Build of configuration Debug for project 03_ToggleLEDWithBTN_EXTI ****
+make -j4 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DSTM32F401CCUx -DSTM32 -DSTM32F4 -c -I../Inc -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/03_ToggleLEDWithBTN_EXTI/LIB" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/03_ToggleLEDWithBTN_EXTI/MCAL/Inc" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/03_ToggleLEDWithBTN_EXTI/Inc" -I"C:/Users/Ahmed Khaled Hammad/Documents/ARM_BlackPill/STM_CubeProjects/03_ToggleLEDWithBTN_EXTI/HAL/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "03_ToggleLEDWithBTN_EXTI.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\Ahmed Khaled Hammad\Documents\ARM_BlackPill\STM_CubeProjects\03_ToggleLEDWithBTN_EXTI\STM32F401CCUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="03_ToggleLEDWithBTN_EXTI.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: 03_ToggleLEDWithBTN_EXTI.elf
+ 
+arm-none-eabi-size   03_ToggleLEDWithBTN_EXTI.elf 
+arm-none-eabi-objdump -h -S  03_ToggleLEDWithBTN_EXTI.elf  > "03_ToggleLEDWithBTN_EXTI.list"
+arm-none-eabi-objcopy  -O ihex  03_ToggleLEDWithBTN_EXTI.elf  "03_ToggleLEDWithBTN_EXTI.hex"
+   text	   data	    bss	    dec	    hex	filename
+   2704	      8	   1568	   4280	   10b8	03_ToggleLEDWithBTN_EXTI.elf
+arm-none-eabi-objcopy  -O binary  03_ToggleLEDWithBTN_EXTI.elf  "03_ToggleLEDWithBTN_EXTI.bin"
+Finished building: default.size.stdout
+ 
+Finished building: 03_ToggleLEDWithBTN_EXTI.list
+Finished building: 03_ToggleLEDWithBTN_EXTI.hex
+Finished building: 03_ToggleLEDWithBTN_EXTI.bin
+ 
+ 
+ 
+
+07:19:25 Build Finished. 0 errors, 0 warnings. (took 1s.877ms)
+

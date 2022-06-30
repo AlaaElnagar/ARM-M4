@@ -1,0 +1,34 @@
+/*******************************************************************************************************/
+/* Author            : Ahmed khaled Hammad                                                             */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 23 May 2022                                                                     */
+/* Description       : MFPEC_Privite.h --> implementations                                             */
+/* Features          : Register Definitions                                                            */
+/*******************************************************************************************************/
+
+
+
+/*******************************************************************************************************/
+/*                                   guard of file will call on time in .c                             */
+/*******************************************************************************************************/
+
+
+#ifndef MFPEC_PRIVATE_H_
+#define MFPEC_PRIVATE_H_
+
+
+typedef struct{
+
+	volatile u32 ACR      ;
+	volatile u32 KEYR     ;
+	volatile u32 OPTKEYR  ;
+	volatile u32 SR       ;
+	volatile u32 CR       ;
+	volatile u32 OPTCR    ;
+
+}FPEC_Type;
+
+#define MFPEC  ((volatile FPEC_Type*) 0x40023C00)
+
+
+#endif /* MFPEC_PRIVATE_H_ */

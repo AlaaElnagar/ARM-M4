@@ -1,0 +1,6 @@
+MRCC_prog.c:61:6:MRCC_voidEnablePeripheralClock	16	static
+MRCC_prog.c:85:6:MRCC_voidDisablePeripheralClock	16	static
+MRCC_prog.c:106:6:MRCC_voidEnableSecuritySystem	4	static
+MRCC_prog.c:120:6:MRCC_voidDisableSecuritySystem	4	static
+MRCC_prog.c:135:6:MRCC_voidInitSystemClk	4	static
+MRCC_prog.c:214:6:MRCC_voidInitClock	16	static

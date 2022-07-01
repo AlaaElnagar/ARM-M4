@@ -1,0 +1,7 @@
+1656700237636	Delete 2 resources
+1656700251640	Delete resource '00_LED_TOGGLE/src/stm32f4xx_hal_msp.c'
+1656700782053	Delete 3 resources
+1656700788886	Delete resource '01_LED_Blink/src/main.c'
+1656701101682	Delete resource '01_LED_Blink/include'
+1656701121131	Delete resource '01_LED_Blink/src'
+1656701204724	Delete resource '01_LED_Blink'

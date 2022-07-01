@@ -1,0 +1,8 @@
+00:46:04 **** Incremental Build of configuration Debug for project 00_LED_TOGGLE ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "00_LED_TOGGLE.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5319	    160	    412	   5891	   1703	00_LED_TOGGLE.elf
+Finished building: 00_LED_TOGGLE.siz
+ 

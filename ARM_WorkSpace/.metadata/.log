@@ -2408,3 +2408,27 @@ Caused by: java.lang.IllegalStateException: Expected BEGIN_OBJECT but was STRING
 	at com.google.gson.stream.JsonReader.beginObject(JsonReader.java:374)
 	at com.google.gson.internal.bind.ReflectiveTypeAdapterFactory$Adapter.read(ReflectiveTypeAdapterFactory.java:165)
 	... 9 more
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-02 01:01:15.078
+!MESSAGE Indexed '01_LED_ToggleWithSystick' (25 sources, 165 headers) in 5.35 sec: 10,870 declarations; 15,540 references; 42 unresolved inclusions; 256 syntax errors; 5,785 unresolved names (18%)
+
+!ENTRY org.eclipse.launchbar.core 2 0 2022-07-02 01:07:51.209
+!MESSAGE Enablement expression is missing for descriptor type org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.launchbar.core 2 0 2022-07-02 01:07:51.212
+!MESSAGE Enablement expression is missing for config provider for org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.core.resources 4 372 2022-07-02 01:07:51.218
+!MESSAGE Resource '/00_HelloARM' is not open.
+
+!ENTRY org.eclipse.core.resources 4 372 2022-07-02 01:07:51.249
+!MESSAGE Resource '/00_LED_TOGGLE' is not open.
+
+!ENTRY org.eclipse.core.resources 4 372 2022-07-02 01:07:51.256
+!MESSAGE Resource '/RemoteSystemsTempFiles' is not open.
+
+!ENTRY ilg.gnuarmeclipse.debug.gdbjtag.openocd 4 1 2022-07-02 01:07:54.369
+!MESSAGE D:\01_Ahmed_Khaled\02_ARM\02_IMT_ARM_Diploma\02- Tools\03- IMT SDK\IMT_SDK_Win_64\WinARM\OpenOCD\bin/openocd.exe -c gdb_port 3333 -c telnet_port 4444 -f board/stmIMTConfig.cfg -c echo "Started by GNU ARM Eclipse"
+
+!ENTRY ilg.gnuarmeclipse.debug.gdbjtag.openocd 4 1 2022-07-02 01:07:55.072
+!MESSAGE arm-none-eabi-gdb --interpreter=mi2 --nx

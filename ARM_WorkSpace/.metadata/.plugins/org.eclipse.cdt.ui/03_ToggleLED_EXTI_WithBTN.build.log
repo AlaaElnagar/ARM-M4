@@ -1,0 +1,11 @@
+17:50:50 **** Incremental Build of configuration Debug for project 03_ToggleLED_EXTI_WithBTN ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "03_ToggleLED_EXTI_WithBTN.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5799	    160	    428	   6387	   18f3	03_ToggleLED_EXTI_WithBTN.elf
+Finished building: 03_ToggleLED_EXTI_WithBTN.siz
+ 
+
+17:50:51 Build Finished (took 1s.541ms)
+

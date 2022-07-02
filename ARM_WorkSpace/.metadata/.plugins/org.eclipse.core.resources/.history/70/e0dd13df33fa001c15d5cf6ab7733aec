@@ -1,0 +1,99 @@
+/*******************************************************************************************************/
+/* Author            : Ahmed khaled Hammad                                                             */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 23 May 2022                                                                     */
+/* Description       : MDMA_Privite.h --> implementations                                              */
+/* Features          : Register Definitions                                                            */
+/*******************************************************************************************************/
+
+
+/*******************************************************************************************************/
+/*                                   guard of file will call on time in .c                             */
+/*******************************************************************************************************/
+
+#ifndef DMA_REG_H_
+#define DMA_REG_H_
+
+/*******************************************************************************************************/
+/*                                    Macros Base Address Of DMA1 Registers                            */
+/*******************************************************************************************************/
+
+#define    DMA_BASE_ADRESS			      0x40026000
+
+
+/*******************************************************************************************************/
+/*                                       Register Definitions                                          */
+/*-----------------------------------------------------------------------------------------------------*/
+/*     - Developer can't Edit in it                                                                    */
+/*     - Register _ Defination		                                                                   */
+/*     - Design :                                                                                      */
+/*    				- #define	:	NO                                                                 */
+/*    				- Union		:	NO                                                                 */
+/*    				- Struct	:	YES                                                                */
+/*                                                                                                     */
+/*******************************************************************************************************/
+
+
+
+typedef struct
+{
+	volatile u32 CR;
+	volatile u32 NDTR;
+	volatile u32 PAR;
+	volatile u32 M0AR;
+	volatile u32 M1AR;
+	volatile u32 FCR;
+
+}DMACHANNEL;
+
+
+typedef struct
+{
+	volatile u32 LISR;
+	volatile u32 HISR;
+	volatile u32 LIFCR;
+	volatile u32 HIFCR;
+	volatile DMACHANNEL CHANNEL[8];
+
+}DMA;
+
+/***********************************************************************************
+	-----> Macros
+			*  Base_Address DMA_2       --> 0x4002 6400
+			*  Base_Address DMA_2       --> 0x4002 6000
+************************************************************************************/
+
+#define DMA_1            ((( volatile  DMA_t *) 0x40026000))
+#define DMA_2            ((( volatile  DMA_t *) 0x40026400))
+
+
+
+
+DMA_1 ->StreamID[0].CR
+
+
+
+typedef struct{
+
+	volatile u32 CCR       ;//0x000
+	volatile u32 CNDTR     ;//0x004
+	volatile u32 CPAR      ;//0x008
+	volatile u32 CMAR      ;//0x00C
+	volatile u32 RESERVED  ;//0x010
+
+}DMACHANNEL;
+
+typedef struct{
+
+	volatile u32 LISR  ;//0x000
+	volatile u32 HISR  ;//0x004
+	volatile u32 LIFCR ;//0x008
+	volatile u32 HIFCR ;//0x00C
+	DMACHANNEL CHANNEL[7];//0x008
+
+}DMA;
+
+#define MDMA ( ( volatile DMA * ) DMA_BASE_ADRESS )
+
+
+#endif /* DMA_REG_H_ */

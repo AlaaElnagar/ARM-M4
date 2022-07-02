@@ -1,0 +1,11 @@
+14:24:37 **** Incremental Build of configuration Debug for project 02_ToggleLedWithNVIC ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "02_ToggleLedWithNVIC.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5623	    160	    416	   6199	   1837	02_ToggleLedWithNVIC.elf
+Finished building: 02_ToggleLedWithNVIC.siz
+ 
+
+14:24:38 Build Finished (took 1s.680ms)
+

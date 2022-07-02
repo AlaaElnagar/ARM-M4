@@ -2,17 +2,19 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="_GPIOA_PORT" key="selection"/>
+		<item value="_PIN_1" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="_PIN_0"/>
 			<item value="_GPIOB_PORT"/>
 			<item value="_GPIOA_PORT"/>
 			<item value="PERIPH_BASE"/>
 		</list>
 		<list key="replacehistory">
+			<item value="_PIN_1"/>
 			<item value="_GPIOA_PORT"/>
 			<item value=""/>
 			<item value="_GPIOB_PORT"/>

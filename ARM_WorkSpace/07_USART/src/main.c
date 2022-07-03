@@ -1,69 +1,93 @@
-/*
- * This file is part of the µOS++ distribution.
- *   (https://github.com/micro-os-plus)
- * Copyright (c) 2014 Liviu Ionescu.
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
 
-// ----------------------------------------------------------------------------
+#include "LSTD_TYPES.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "diag/Trace.h"
+#include "MRCC_interface.h"
+#include "MGPIO_interface.h"
+#include "MNVIC_Interface.h"
+#include "MDMA_Interface.h"
+#include "MUSART_Interface.h"
 
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F4 empty sample (trace via DEBUG).
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the DEBUG output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace_impl.c
-// (currently OS_USE_TRACE_ITM, OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
-
-// ----- main() ---------------------------------------------------------------
-
-// Sample pragmas to cope with warnings. Please note the related line at
-// the end of this function, used to pop the compiler diagnostics status.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wmissing-declarations"
-#pragma GCC diagnostic ignored "-Wreturn-type"
-
-int
-main(int argc, char* argv[])
+int main(void)
 {
-  // At this stage the system clock should have already been configured
-  // at high speed.
+	/*************************************************************************************************************************/
+	/********************************Step 1: initialize System Clock is 16MHz from HSI****************************************/
+	/*************************************************************************************************************************/
 
-  // Infinite loop
-  while (1)
-    {
-       // Add your code here.
-    }
+	MRCC_voidInitSystemClk();
+
+	/*************************************************************************************************************************/
+	/********************************************Step 2: Enable peripherls clock**********************************************/
+	/*************************************************************************************************************************/
+
+	/*Enable GPIO Peripheral clock*/
+	MRCC_voidEnablePeripheralClock(AHB1,_PERIPHERAL_EN_GPIOA ) ;
+
+
+	/*Enable RCC For USART1*/
+	MRCC_voidEnablePeripheralClock(APB2, PERIPHERAL_EN_USART1); //Enable CLK Of UART1   At APB2
+
+
+	/*************************************************************************************************************************/
+	/********************************************Step 3: Configur UART1 ,UART2  Pins******************************************/
+	/*************************************************************************************************************************/
+
+	MGPIO_voidSetPinMode(_GPIOA_PORT, _PIN_9, _MODE_ALTF);     //TX-->UART1
+	MGPIO_voidSetPinMode(_GPIOA_PORT, _PIN_10, _MODE_ALTF);    //RX-->UART1
+	MGPIO_voidSetPinAltFn(_GPIOA_PORT, _PIN_9, _ALTFN_7);      //TX-->UART1
+	MGPIO_voidSetPinAltFn(_GPIOA_PORT, _PIN_10, _ALTFN_7);     //RX-->UART1
+
+
+	/*************************************************************************************************************************/
+	/********************************************Step 4: initialize Output Pins  in System ***********************************/
+	/*************************************************************************************************************************/
+	for(int PIN =0; PIN<8; PIN++)
+	{
+		/*Set Pin Mode --> Output*/
+		MGPIO_voidSetPinMode(_GPIOA_PORT, PIN, _MODE_OUTPUT) ;
+		/*Out put Push Pull*/
+		MGPIO_voidSetPinOutPutType(_GPIOA_PORT,PIN,_OUTPUT_TYPE_PUSH_PULL);
+		/*Pin Speed*/
+		MGPIO_voidSetPinOutSpeed(_GPIOA_PORT, PIN, _OUTPUT_SPEED_LOW);
+	}
+
+	/*************************************************************************************************************************/
+	/********************************************Step 5: Enable Peripherials interrupt from NVIC *****************************/
+	/*************************************************************************************************************************/
+
+	MNVIC_voidEnableInterrupt(37) ;              //Enable uart1 from NVIC
+
+	/*************************************************************************************************************************/
+	/********************************************Step 6: Initialize USART1 ***************************************************/
+	/*************************************************************************************************************************/
+
+	MSUART_voidInit();
+
+	/*************************************************************************************************************************/
+	/********************************************Step 6:  initialize system Peripherials *************************************/
+	/*************************************************************************************************************************/
+	MUSART_voidEnable(1) ; //Enable UART 1
+
+
+
+	MUSART_u8SendData(1,(u8*)"Ahmed",5);
+
+	/* Loop forever */
+	while(1)
+	{
+	}
 }
 
-#pragma GCC diagnostic pop
+void USART1_IRQHandler(void){
 
-// ----------------------------------------------------------------------------
+	MGPIO_voidWriteData(_GPIOA_PORT, _PIN_0, _HIGH) ;
+	u8 L_u8msg = MUSART_u8ReadData(1) ;
+
+	MUSART_u8SendData(1,&L_u8msg,1);
+
+}
+
+
+
+
+
+

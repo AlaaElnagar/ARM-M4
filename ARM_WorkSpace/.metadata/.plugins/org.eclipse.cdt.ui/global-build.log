@@ -1,16 +1,22 @@
-01:05:07 **** Incremental Build of configuration Debug for project 05_DMA ****
+00:24:17 **** Incremental Build of configuration Debug for project 07_USART ****
 make all 
-Invoking: Cross ARM GNU Print Size
-arm-none-eabi-size --format=berkeley "05_DMA.elf"
-   text	   data	    bss	    dec	    hex	filename
-   5767	    160	   4420	  10347	   286b	05_DMA.elf
-Finished building: 05_DMA.siz
+Building file: ../src/main.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/main.d" -MT"src/main.o" -c -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
  
-01:05:16 **** Incremental Build of configuration Debug for project 05_DMA ****
-make all 
+Building target: 07_USART.elf
+Invoking: Cross ARM GNU C++ Linker
+arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -nostartfiles -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"07_USART.map" --specs=nano.specs -o "07_USART.elf"  ./system/src/stm32f4-hal/stm32f4xx_hal.o ./system/src/stm32f4-hal/stm32f4xx_hal_cortex.o ./system/src/stm32f4-hal/stm32f4xx_hal_dfsdm.o ./system/src/stm32f4-hal/stm32f4xx_hal_flash.o ./system/src/stm32f4-hal/stm32f4xx_hal_gpio.o ./system/src/stm32f4-hal/stm32f4xx_hal_iwdg.o ./system/src/stm32f4-hal/stm32f4xx_hal_pwr.o ./system/src/stm32f4-hal/stm32f4xx_hal_rcc.o  ./system/src/newlib/_cxx.o ./system/src/newlib/_exit.o ./system/src/newlib/_sbrk.o ./system/src/newlib/_startup.o ./system/src/newlib/_syscalls.o ./system/src/newlib/assert.o  ./system/src/diag/Trace.o ./system/src/diag/trace_impl.o  ./system/src/cortexm/_initialize_hardware.o ./system/src/cortexm/_reset_hardware.o ./system/src/cortexm/exception_handlers.o  ./system/src/cmsis/system_stm32f4xx.o ./system/src/cmsis/vectors_stm32f401xc.o  ./src/MDMA_Program.o ./src/MGPIO_program.o ./src/MNVIC_Program.o ./src/MRCC_prog.o ./src/MSYSTICK_Program.o ./src/MUSART_Program.o ./src/main.o   
+Finished building target: 07_USART.elf
+ 
+Invoking: Cross ARM GNU Create Flash Image
+arm-none-eabi-objcopy -O ihex "07_USART.elf"  "07_USART.hex"
+Finished building: 07_USART.hex
+ 
 Invoking: Cross ARM GNU Print Size
-arm-none-eabi-size --format=berkeley "05_DMA.elf"
+arm-none-eabi-size --format=berkeley "07_USART.elf"
    text	   data	    bss	    dec	    hex	filename
-   5767	    160	   4420	  10347	   286b	05_DMA.elf
-Finished building: 05_DMA.siz
+   5967	    160	    420	   6547	   1993	07_USART.elf
+Finished building: 07_USART.siz
  

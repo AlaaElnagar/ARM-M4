@@ -1,0 +1,11 @@
+11:28:54 **** Incremental Build of configuration Debug for project 09_TFT_With_SPI ****
+make all 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "09_TFT_With_SPI.elf"
+   text	   data	    bss	    dec	    hex	filename
+  47079	    160	    424	  47663	   ba2f	09_TFT_With_SPI.elf
+Finished building: 09_TFT_With_SPI.siz
+ 
+
+11:28:56 Build Finished (took 1s.919ms)
+

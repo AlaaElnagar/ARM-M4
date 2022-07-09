@@ -10,5 +10,7 @@
 		<item value="0" key="askReindex.detail"/>
 	</section>
 	<section name="completion_proposal_size">
+		<item value="316" key="size.y"/>
+		<item value="891" key="size.x"/>
 	</section>
 </section>

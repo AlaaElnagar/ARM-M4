@@ -1,69 +1,87 @@
-/*
- * This file is part of the µOS++ distribution.
- *   (https://github.com/micro-os-plus)
- * Copyright (c) 2014 Liviu Ionescu.
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
 
-// ----------------------------------------------------------------------------
+#include "LSTD_TYPES.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "diag/Trace.h"
+#include "MRCC_interface.h"
+#include "MGPIO_interface.h"
+#include "MNVIC_Interface.h"
+#include "MDMA_Interface.h"
+#include "MSPI_Interface.h"
+#include "HTFT_Interface.h"
+#include "image.h"
 
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F4 empty sample (trace via DEBUG).
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the DEBUG output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace_impl.c
-// (currently OS_USE_TRACE_ITM, OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
 
-// ----- main() ---------------------------------------------------------------
-
-// Sample pragmas to cope with warnings. Please note the related line at
-// the end of this function, used to pop the compiler diagnostics status.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#pragma GCC diagnostic ignored "-Wmissing-declarations"
-#pragma GCC diagnostic ignored "-Wreturn-type"
-
-int
-main(int argc, char* argv[])
+int main(void)
 {
-  // At this stage the system clock should have already been configured
-  // at high speed.
+	/*************************************************************************************************************************/
+	/********************************Step 1: initialize System Clock is 16MHz from HSI****************************************/
+	/*************************************************************************************************************************/
 
-  // Infinite loop
-  while (1)
-    {
-       // Add your code here.
-    }
+	MRCC_voidInitSystemClk();
+
+	/*************************************************************************************************************************/
+	/********************************************Step 2: Enable peripherls clock**********************************************/
+	/*************************************************************************************************************************/
+
+	/*Enable GPIO Peripheral clock*/
+	MRCC_voidEnablePeripheralClock(AHB1,_PERIPHERAL_EN_GPIOA ) ;
+
+
+	/* Config RCC GPIO SPI */
+	MRCC_voidEnablePeripheralClock(APB2, PERIPHERAL_EN_SPI1); //Enable CLK Of UART1   At APB2
+
+
+	/*************************************************************************************************************************/
+	/********************************************Step 3: Configur SPI1  Pins**************************************************/
+	/*************************************************************************************************************************/
+
+
+	/* GPIO At HW MODE MOSI(AF,OUTPUT)Like SPI1--->AF(5)*/
+	/* GPIO At HW MODE NSS(AF,OUTPUT)Like SPI1--->AF(5) */
+	/* GPIO At HW MODE MISO(AF,INPUT)Like SPI1--->AF(5) */
+
+	MGPIO_voidSetPinMode(_GPIOA_PORT, _PIN_5, _MODE_ALTF);
+	MGPIO_voidSetPinMode(_GPIOA_PORT, _PIN_7, _MODE_ALTF);
+
+	MGPIO_voidSetPinAltFn(_GPIOA_PORT, _PIN_5, _ALTFN_5);    //SPI1_SCK-->SPI1
+	MGPIO_voidSetPinAltFn(_GPIOA_PORT, _PIN_7, _ALTFN_5);     //SPI1_MOSI-->SPI1
+	/*************************************************************************************************************************/
+	/********************************************Step 4: initialize Output Pins  in System ***********************************/
+	/*************************************************************************************************************************/
+	for(int PIN =0; PIN<3; PIN++)
+	{                                                                              /* A0   */
+		/*Set Pin Mode --> Output*/                                                /* RST  */
+		MGPIO_voidSetPinMode(_GPIOA_PORT, PIN, _MODE_OUTPUT) ;                     /* CLK  */
+		/*Out put Push Pull*/                                                      /* MOSI */
+		MGPIO_voidSetPinOutPutType(_GPIOA_PORT,PIN,_OUTPUT_TYPE_PUSH_PULL);
+		/*Pin Speed*/
+		MGPIO_voidSetPinOutSpeed(_GPIOA_PORT, PIN, _OUTPUT_SPEED_LOW);
+	}
+
+
+	/*************************************************************************************************************************/
+	/********************************************Step 6: Initialize SPI1 ***************************************************/
+	/*************************************************************************************************************************/
+
+
+	MSPI1_voidInit() ;
+
+	/*************************************************************************************************************************/
+	/********************************************Step 6:  initialize system Peripherials *************************************/
+	/*************************************************************************************************************************/
+
+	/* TFT Init */
+	HTFT_voidInitialize();
+
+	/* Display Image */
+	HTFT_voidDisplayImage(image);
+
+
+	/* Loop forever */
+	while(1)
+	{
+	}
 }
 
-#pragma GCC diagnostic pop
 
-// ----------------------------------------------------------------------------
+
+

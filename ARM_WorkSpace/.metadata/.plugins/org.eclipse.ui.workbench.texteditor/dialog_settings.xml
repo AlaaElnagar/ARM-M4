@@ -2,29 +2,37 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="_PIN_1" key="selection"/>
+		<item value="USART6_REG" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="UART6_REG"/>
+			<item value="UART2_REG"/>
+			<item value="UART1_REG"/>
+			<item value="DMA1_CHANNEL0"/>
+			<item value="MDMA_1"/>
+			<item value="MDMA_2"/>
+			<item value="_PIN_1"/>
 			<item value="_PIN_0"/>
-			<item value="_GPIOB_PORT"/>
-			<item value="_GPIOA_PORT"/>
-			<item value="PERIPH_BASE"/>
 		</list>
 		<list key="replacehistory">
+			<item value="USART6_REG"/>
+			<item value="USART2_REG"/>
+			<item value="USART1_REG"/>
+			<item value="DMA2_CHANNEL0"/>
+			<item value="MDMA_2"/>
+			<item value="MDMA_1"/>
+			<item value="_PIN_0"/>
 			<item value="_PIN_1"/>
-			<item value="_GPIOA_PORT"/>
-			<item value=""/>
-			<item value="_GPIOB_PORT"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="336" key="DIALOG_WIDTH"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 		<item value="454" key="DIALOG_HEIGHT"/>
-		<item value="801" key="DIALOG_X_ORIGIN"/>
+		<item value="632" key="DIALOG_X_ORIGIN"/>
 		<item value="222" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

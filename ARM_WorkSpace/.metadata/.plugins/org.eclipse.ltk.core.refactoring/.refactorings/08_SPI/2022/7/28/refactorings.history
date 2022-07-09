@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;08_SPI/include/MSPI_Program.h&apos; to &apos;MSPI_Program.c&apos;" description="Rename resource &apos;MSPI_Program.h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="include/MSPI_Program.h" name="MSPI_Program.c" stamp="1656954329319" updateReferences="true"/>
+</session>

@@ -1,0 +1,1088 @@
+/*******************************************************************************************************/
+/* Author            : Ahmed khaled Hammad                                                             */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 23 May 2022                                                                     */
+/* Description       : MSPI_Program.c --> implementations                                              */
+/* Module  Features  :                                                                                 */
+/*      01- MSPI1_voidInit                                                                             */
+/*      02- MSPI1_voidSendDataU8                                                                       */
+/*      03- MSPI1_voidSetCallBack                                                                      */
+/*******************************************************************************************************/
+
+
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      Standard Types LIB                                             */
+/*******************************************************************************************************/
+
+#include "LSTD_TYPES.h"
+#include "LERROR_STATES.h"
+#include "LBIT_MATH.h"
+
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      MCAL Components                                                */
+/*******************************************************************************************************/
+
+
+#include "MSPI_Interface.h"
+#include "MSPI_Config.h"
+#include "MSPI_Privaite.h"
+
+
+
+void (*MSPI1_CallBack) (void);
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      Functions Implementations                                      */
+/*******************************************************************************************************/
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      01- MSPI1_voidInit                                             */
+/*-----------------------------------------------------------------------------------------------------*/
+/* 1- Function Description -> Enable Peripheral Clock                                                  */
+/* 2- Function Input       -> Copy_uBusName ,   Copy_u8PerNum                                          */
+/*   - BusName_t      : The Bus Of The Prepheral ( AHB1 , AHB2 , APB1 , APB2 ) Every One               */
+/*                      Detect Which REG To Choice Pripheral From It                                   */
+/*   - Copy_u8PerName :  The Order Of Prepheral On The Selected Reg                                    */
+/* 3- Function Return      -> No Thing                                                                 */
+/*******************************************************************************************************/
+
+
+
+void MSPI1_voidInit ( void ){
+
+#if   MSP1_STATUS == MSPI_ENABLE
+
+#if		MSPI1_CLOCK_MODE == MSPI_MODE0
+
+	CLR_BIT( MSPI1 -> CR1 , 0 ); CLR_BIT( MSPI1 -> CR1 , 1 );
+
+#elif	MSPI1_CLOCK_MODE == MSPI_MODE1
+
+	SET_BIT( MSPI1 -> CR1 , 0 ); CLR_BIT( MSPI1 -> CR1 , 1 );
+
+#elif	MSPI1_CLOCK_MODE == MSPI_MODE2
+
+	CLR_BIT( MSPI1 -> CR1 , 0 ); SET_BIT( MSPI1 -> CR1 , 1 );
+
+#elif	MSPI1_CLOCK_MODE == MSPI_MODE3
+
+	SET_BIT( MSPI1 -> CR1 , 0 ); SET_BIT( MSPI1 -> CR1 , 1 );
+
+#endif
+
+#if    MSPI1_MASTER_SLAVE == MSPI_MASTER
+
+	SET_BIT( MSPI1 -> CR1 , 2 );
+
+#elif  MSPI1_MASTER_SLAVE == MSPI_SLAVE
+
+	CLR_BIT( MSPI1 -> CR1 , 2 );
+
+#endif
+
+#if   MSPI1_DATA_ORDER == MSPI_MSB_FIRST
+
+	CLR_BIT( MSPI1 -> CR1 , 7 );
+
+#elif MSPI1_DATA_ORDER == MSPI_LSB_FIRST
+
+	SET_BIT( MSPI1 -> CR1 , 7 );
+
+#endif
+
+#if   MSPI1_SS_MANAGE  == HW_SLAVE_MANAGEMENT
+	/* Software slave management disabled*/
+	/* HW At Master SSI Not Used */
+	CLR_BIT( MSPI1 -> CR1 , 9 );
+
+#elif MSPI1_SS_MANAGEb == SW_SLAVE_MANAGEMENT
+
+	SET_BIT( MSPI1 -> CR1 , 9 );
+
+#endif
+
+#if   MSPI1_DATA_SIZE == MSPI_8BIT_DATA
+
+	CLR_BIT( MSPI1 -> CR1 , 11 );
+
+#elif MSPI1_DATA_SIZE == MSPI_16BIT_DATA
+
+	SET_BIT( MSPI1 -> CR1 , 11 );
+
+#endif
+
+#if   MSPI1_INT_STATUS == MSPI_INT_DISABLE
+
+	/* Active Intterput OF  TXEIE & RXNEIE CR2*/
+	MSPI1 -> CR2 = 0 ;
+
+	//MSPI1 -> CR2 = 0x000000C0;
+
+#elif MSPI1_INT_STATUS == MSPI_TXE_INT_ENABLE
+
+	SET_BIT( MSPI1 -> CR2 , 7 );
+
+#elif MSPI1_INT_STATUS == MSPI_RXNE_INT_ENABLE
+
+	SET_BIT( MSPI1 -> CR2 , 6 );
+
+#endif
+
+	MSPI1 -> CR1 &= 0xFFC7 ;
+	MSPI1 -> CR1 |= ( MSPI1_PRESCALLER << 3 ) ;
+
+	SET_BIT( MSPI1 -> CR1 , 6 );
+	/********************************************************** Start_FUNCTION  **********************************************************/
+	/*		Function Take  :
+							- SPINumber  		: (SPIX) X{1,2,.....,6}
+							- DeviceMode    : SPI_MASTER   , SPI_SLAVE
+							- ClockPolarity :         0    ,    1
+							- ClockPhase    :         0    ,    1
+							- DataSize      : DATA_SIZE_8  , DATA_SIZE_16
+							- DataDir       : DATA_DIR_MSB , DATA_DIR_LSB
+							- NssMode       : NSS_MODE_SW  , NSS_MODE_HW
+							- BiDirMode     : Bi_Dir_ON    , Bi_Dir_OFF
+							- EN SPI
+							- Bit 10 if 1 Resive only
+							- ssm : automatic make ss low and after high but only when have only one slave
+					To Iniat The SPI
+
+			*/
+
+	void MSPI_voidInit(u8 Copy_u8SPINumber ,u8 Copy_u8DeviceMode ,u8 Copy_u8ClockPolarity ,u8 Copy_u8ClockPhase ,u8 Copy_u8DataSize ,u8 Copy_u8DataDir , u8 Copy_u8NssMode,u8 Copy_u8BaudRate ,u8 Copy_u8BiDirMode)
+	{
+		switch(Copy_u8SPINumber)
+		{
+			case SPI1 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI1_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI1_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI1_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI1_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI1_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI1_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI1_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI1_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI1_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI1_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI1_CR1, SSM);
+				SET_BIT(SPI1_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI1_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI1_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI1_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI1_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI1_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI1_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI1_CR1,SPE);
+
+			break ;
+
+			/*********************************************************************************************************************************************/
+
+
+			case SPI2 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI2_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI2_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI2_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI2_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI2_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI2_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI2_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI2_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI2_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI2_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI2_CR1, SSM);
+				SET_BIT(SPI2_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI2_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI2_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI2_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI2_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI2_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI2_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI2_CR1,SPE);
+
+			break ;
+			/*********************************************************************************************************************************************/
+
+			case SPI3 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI3_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI3_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI3_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI3_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI3_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI3_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI3_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI3_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI3_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI3_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI3_CR1, SSM);
+				SET_BIT(SPI3_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI3_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI3_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI3_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI3_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI3_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI3_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI3_CR1,SPE);
+
+			break ;
+			/*********************************************************************************************************************************************/
+				case SPI4 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI4_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI4_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI4_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI4_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI4_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI4_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI4_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI4_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI4_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI4_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI4_CR1, SSM);
+				SET_BIT(SPI4_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI4_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI4_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI4_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI4_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI4_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI4_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI4_CR1,SPE);
+
+			break ;
+			/*********************************************************************************************************************************************/
+		case SPI5 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI5_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI5_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI5_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI5_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI5_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI5_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI5_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI5_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI5_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI5_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI5_CR1, SSM);
+				SET_BIT(SPI5_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI5_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI5_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI5_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI5_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI5_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI5_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI5_CR1,SPE);
+
+			break ;
+			/*********************************************************************************************************************************************/
+		case SPI6 :
+	/*********************************************************/
+				/* Cofigure The SPI Device Mode This bit should not be changed when communication is ongoing.*/
+			if(Copy_u8DeviceMode == SPI_MASTER)
+			{
+				/*	Master configuration 	*/
+				SET_BIT(SPI6_CR1, MSTR);
+			}
+
+			else if (Copy_u8DeviceMode == SPI_SLAVE)
+			{
+				 /*	 Slave configuration	*/
+				CLR_BIT(SPI6_CR1, MSTR);
+			}
+				else {/* MISRA*/}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Phase And Polarity	 */
+			if(Copy_u8ClockPolarity==1U )
+			{ /*CK to 1 when idle*/
+				SET_BIT(SPI6_CR1,CPOL);
+			}
+			else
+			{ /*CK to 0 when idle*/
+				CLR_BIT(SPI6_CR1,CPOL);
+			}
+			if(Copy_u8ClockPhase==1U )
+			{ /*The second clock transition is the first data capture edge*/
+				SET_BIT(SPI6_CR1, CPHA);
+			}
+			else
+			{ /*The first clock transition is the first data capture edge*/
+				CLR_BIT(SPI6_CR1,CPHA);
+			}
+
+	/*********************************************************/
+			/* 	Cofigure The SPI Data Size	 */
+			if(Copy_u8DataSize==DATA_SIZE_16  )
+			{ /*16-bit data frame format is selected for transmission/receptione*/
+				SET_BIT(SPI6_CR1, DFF);
+			}
+			else if (Copy_u8DataSize==DATA_SIZE_8 )
+			{ /*8-bit data frame format is selected for transmission/reception*/
+				CLR_BIT(SPI6_CR1,DFF);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* 	Cofigure The SPI Data DIR	 */
+			if(Copy_u8DataDir ==DATA_DIR_LSB )
+			{ /*LSB transmitted first*/
+				SET_BIT(SPI6_CR1, LSBFIRST);
+			}
+			else if (Copy_u8DataDir==DATA_DIR_MSB )
+			{ /*MSB transmitted first*/
+				CLR_BIT(SPI6_CR1,LSBFIRST);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+		  /* Cofigure The SPI NssMode */
+			if((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode == NSS_MODE_SW))
+			{ /* Software slave management enabled */
+				SET_BIT(SPI6_CR1, SSM);
+				SET_BIT(SPI6_CR1, SSI);
+			}
+			else if ((Copy_u8DeviceMode == SPI_MASTER) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{ /* Software slave management disabled*/
+				CLR_BIT(SPI6_CR1,SSM);
+				/* HW At Master SSI Not Used */
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_SW) )
+			{  /* SW Slave*/
+				SET_BIT(SPI6_CR1, SSM);
+			}
+			else if ((Copy_u8DeviceMode == SPI_SLAVE) && (Copy_u8NssMode== NSS_MODE_HW) )
+			{  /* SW Slave*/
+				CLR_BIT(SPI6_CR1, SSM);
+			}
+
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BI_DIR_MODE */
+			if(Copy_u8BiDirMode == Bi_Dir_ON)
+			{ /* 1-line bidirectional data mode selected */
+				SET_BIT(SPI6_CR1,BIDIMODE);
+			}
+			else if (Copy_u8BiDirMode== Bi_Dir_OFF)
+			{ /*  2-line unidirectional data mode selected*/
+				CLR_BIT(SPI6_CR1,BIDIMODE);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI BOUD_Rate We Have 7 Option */
+			if((Copy_u8BaudRate <=7))
+			{
+				SPI6_CR1|=(Copy_u8BaudRate<<3U);
+			}
+			else {/* MISRA*/}
+	/*********************************************************/
+			/* Cofigure The SPI EN */
+				SET_BIT(SPI6_CR1,SPE);
+
+			break ;
+			/*********************************************************************************************************************************************/
+			default :
+				/* Give Error Name*/
+					break ;
+
+		}
+
+
+	}
+
+	/*********************************************************** END_ FUNCTION   *********************************************************/
+
+	/********************************************************** Start_FUNCTION  **********************************************************/
+	/*		Function Take  :
+				 The Number OF SPI(SPIX) & X {0,1,...,6} & Disable It
+	*/
+	void MSPI_voidDisable(u8 Copy_u8SPINumber)
+	{
+		switch(Copy_u8SPINumber)
+		{
+			case SPI1 :
+				/* Cofigure The SPI1 Disable */
+			CLR_BIT(SPI1_CR1,SPE);
+			break;
+			/************************************************************/
+				case SPI2 :
+				/* Cofigure The SPI2 Disable */
+			CLR_BIT(SPI2_CR1,SPE);
+			break;
+	   /************************************************************/
+				case SPI3 :
+				/* Cofigure The SPI3 Disable */
+			CLR_BIT(SPI3_CR1,SPE);
+			break;
+		 /************************************************************/
+				case SPI4 :
+				/* Cofigure The SPI4 Disable */
+			CLR_BIT(SPI4_CR1,SPE);
+			break;
+			/************************************************************/
+				case SPI5 :
+				/* Cofigure The SPI5 Disable */
+			CLR_BIT(SPI5_CR1,SPE);
+			break;
+			/************************************************************/
+				case SPI6 :
+				/* Cofigure The SPI6 Disable */
+			CLR_BIT(SPI6_CR1,SPE);
+			break;
+			/**********************************************************/
+				default :
+					/* Give Error Name*/
+					break ;
+	}
+	}
+
+	/*********************************************************** END_ FUNCTION   *********************************************************/
+
+	/********************************************************** Start_FUNCTION  **********************************************************/
+	/*		Function Take  :
+
+			Function Take Number Of SPI & 8_Bit Data To Write Them At DR_REG*/
+	u8 MSPI_u8Write8itData(u8 Copy_u8SPINumber , u8 Copy_u8DataOut)
+	{
+		switch(Copy_u8SPINumber)
+		{
+			case SPI1 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI1_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI1_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI1_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI1_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI1_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI1_DR);
+		break ;
+	/**************************************************************************************************************/
+
+			case SPI2 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI2_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI2_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI2_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI2_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI2_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI2_DR);
+		break ;
+	/**************************************************************************************************************/
+
+			case SPI3 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI3_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI3_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI3_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI3_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI3_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI3_DR);
+		break ;
+	/**************************************************************************************************************/
+
+			case SPI4 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI4_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI4_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI4_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI4_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI4_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI4_DR);
+		break ;
+	/**************************************************************************************************************/
+
+			case SPI5 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI5_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI5_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI5_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI5_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI5_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI5_DR);
+		break ;
+	/**************************************************************************************************************/
+
+			case SPI6 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI6_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI6_SR & (1U<<BSY))==HIGH);
+		/* Fill OutPot Buffer With Data */
+		SPI6_DR = Copy_u8DataOut;
+		/* Waiting For SPI to Finsh EveryThing*/
+		while(((SPI6_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI6_SR & (1U<<BSY))==HIGH);
+		/* Read Data Register*/
+		return(SPI6_DR);
+		break ;
+			/********************************/
+				default :
+					/* Give Error Name*/
+					break ;
+		}
+	}
+
+	/*********************************************************** END_ FUNCTION   *********************************************************/
+
+
+
+	/********************************************************** Start_FUNCTION  **********************************************************/
+	/*		Function Take  :
+			Function Take Number Of SPI & Write Array Of Bit Data  Loop By Data Count Index
+	*/
+
+
+	void MSPI_voidWriteMulti8BitData(u8 Copy_u8SPINumber , u8* Copy_u8DataOut , u8* Copy_u8DataIn , u8 Copy_u8Count   )
+	{
+		u8 Local_u8Index ;
+		switch(Copy_u8SPINumber)
+		{
+			case SPI1 :
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI1_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI1_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI1_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI1_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI1_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI1_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	case SPI2:
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI2_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI2_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI2_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI2_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI2_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI2_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	case SPI3:
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI3_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI3_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI3_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI3_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI3_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI3_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	case SPI4:
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI4_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI4_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI4_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI4_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI4_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI4_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	case SPI5:
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI5_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI5_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI5_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI5_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI5_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI5_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	case SPI6:
+		/* Wating For Previous Tranmission To Compelet by flag(RXNE,BUSY: be Low At End,TXE) */
+			 /* Out Of While When Condition = 0 ----> Busy Flag= LOW OR 2 FLAG == HIGH  */
+			while(((SPI6_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI6_SR & (1U<<BSY))==HIGH);
+
+			for(Local_u8Index =0 ; Local_u8Index < Copy_u8Count ; Local_u8Index ++)
+			{
+				/* Fill OutPot Buffer With Data */
+				SPI6_DR=Copy_u8DataOut[Local_u8Index];
+				/* Waiting For SPI to Finsh EveryThing*/
+		  while(((SPI6_SR & ((1U<<RXNE)|(1U<<TXE)))==LOW)||(SPI6_SR & (1U<<BSY))==HIGH);
+		   /* Read Data Register*/
+				Copy_u8DataIn[Local_u8Index]=SPI6_DR;
+	 		}
+			break ;
+	/*********************************************************************************************/
+	default :
+					/* Give Error Name*/
+					break ;
+
+		}
+	}
+
+
+	/*********************************************************** END_ FUNCTION   *********************************************************/
+
+#elif MSP1_STATUS == MSPI_DISABLE
+	CLR_BIT( MSPI1 -> CR1 , 6 );
+#endif
+
+}
+
+u8 MSPI1_voidSendDataU8 ( u8 Copy_u8Data ){
+
+	MSPI1 -> DR = Copy_u8Data;
+
+	while ( GET_BIT( MSPI1 -> SR , 7) == 1 );
+
+	return (u8) MSPI1 -> DR ;
+
+}
+
+void MSPI1_voidSetCallBack( void (*ptr) (void) ){
+
+	MSPI1_CallBack = ptr;
+
+}
+
+void SPI1_IRQHandler(void){
+
+	MSPI1_CallBack();
+
+}
+

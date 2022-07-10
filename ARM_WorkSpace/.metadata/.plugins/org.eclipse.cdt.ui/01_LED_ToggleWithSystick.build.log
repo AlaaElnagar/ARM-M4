@@ -1,4 +1,4 @@
-01:07:51 **** Incremental Build of configuration Debug for project 01_LED_ToggleWithSystick ****
+13:19:21 **** Build of configuration Debug for project 01_LED_ToggleWithSystick ****
 make all 
 Invoking: Cross ARM GNU Print Size
 arm-none-eabi-size --format=berkeley "01_LED_ToggleWithSystick.elf"
@@ -7,5 +7,5 @@ arm-none-eabi-size --format=berkeley "01_LED_ToggleWithSystick.elf"
 Finished building: 01_LED_ToggleWithSystick.siz
  
 
-01:07:53 Build Finished (took 1s.572ms)
+13:19:23 Build Finished (took 1s.93ms)
 

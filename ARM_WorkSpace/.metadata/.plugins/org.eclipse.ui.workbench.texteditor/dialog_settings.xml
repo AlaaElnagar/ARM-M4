@@ -2,30 +2,30 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="USART6_REG" key="selection"/>
+		<item value="_LOW" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="LOW"/>
+			<item value="HIGH"/>
+			<item value="MGPIO_VidSetPinValue"/>
 			<item value="UART6_REG"/>
 			<item value="UART2_REG"/>
 			<item value="UART1_REG"/>
 			<item value="DMA1_CHANNEL0"/>
 			<item value="MDMA_1"/>
-			<item value="MDMA_2"/>
-			<item value="_PIN_1"/>
-			<item value="_PIN_0"/>
 		</list>
 		<list key="replacehistory">
+			<item value="_LOW"/>
+			<item value="_HIGH"/>
+			<item value="MGPIO_voidWriteData"/>
 			<item value="USART6_REG"/>
 			<item value="USART2_REG"/>
 			<item value="USART1_REG"/>
 			<item value="DMA2_CHANNEL0"/>
 			<item value="MDMA_2"/>
-			<item value="MDMA_1"/>
-			<item value="_PIN_0"/>
-			<item value="_PIN_1"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

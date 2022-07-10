@@ -1,0 +1,62 @@
+15:23:00 **** Incremental Build of configuration Debug for project 06.1_TMU_With_FD ****
+make all 
+Building file: ../src/MGPIO_program.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/MGPIO_program.d" -MT"src/MGPIO_program.o" -c -o "src/MGPIO_program.o" "../src/MGPIO_program.c"
+Finished building: ../src/MGPIO_program.c
+ 
+Building file: ../src/MRCC_prog.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/MRCC_prog.d" -MT"src/MRCC_prog.o" -c -o "src/MRCC_prog.o" "../src/MRCC_prog.c"
+Finished building: ../src/MRCC_prog.c
+ 
+Building file: ../src/MSYSTICK_Program.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/MSYSTICK_Program.d" -MT"src/MSYSTICK_Program.o" -c -o "src/MSYSTICK_Program.o" "../src/MSYSTICK_Program.c"
+../src/MSYSTICK_Program.c: In function 'SysTick_Handler':
+../src/MSYSTICK_Program.c:159:14: warning: variable 'Local_u8Temporary' set but not used [-Wunused-but-set-variable]
+  volatile u8 Local_u8Temporary = 0;
+              ^~~~~~~~~~~~~~~~~
+Finished building: ../src/MSYSTICK_Program.c
+ 
+Building file: ../src/STMU_Program.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/STMU_Program.d" -MT"src/STMU_Program.o" -c -o "src/STMU_Program.o" "../src/STMU_Program.c"
+In file included from ../src/STMU_Program.c:9:0:
+../include/LSTD_TYPES.h:42:17: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
+ #define NULL    (void*) 0
+                 ^
+../include/STMU_Private.h:27:38: note: in expansion of macro 'NULL'
+ Task_t  Task_Array[NO_OF_TASKS] =  { NULL } ;
+                                      ^~~~
+../include/LSTD_TYPES.h:42:17: note: (near initialization for 'Task_Array[0].Periodicity')
+ #define NULL    (void*) 0
+                 ^
+../include/STMU_Private.h:27:38: note: in expansion of macro 'NULL'
+ Task_t  Task_Array[NO_OF_TASKS] =  { NULL } ;
+                                      ^~~~
+Finished building: ../src/STMU_Program.c
+ 
+Building file: ../src/main.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/main.d" -MT"src/main.o" -c -o "src/main.o" "../src/main.c"
+Finished building: ../src/main.c
+ 
+Building target: 06.1_TMU_With_FD.elf
+Invoking: Cross ARM GNU C++ Linker
+arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -nostartfiles -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"06.1_TMU_With_FD.map" --specs=nano.specs -o "06.1_TMU_With_FD.elf"  ./system/src/stm32f4-hal/stm32f4xx_hal.o ./system/src/stm32f4-hal/stm32f4xx_hal_cortex.o ./system/src/stm32f4-hal/stm32f4xx_hal_dfsdm.o ./system/src/stm32f4-hal/stm32f4xx_hal_flash.o ./system/src/stm32f4-hal/stm32f4xx_hal_gpio.o ./system/src/stm32f4-hal/stm32f4xx_hal_iwdg.o ./system/src/stm32f4-hal/stm32f4xx_hal_pwr.o ./system/src/stm32f4-hal/stm32f4xx_hal_rcc.o  ./system/src/newlib/_cxx.o ./system/src/newlib/_exit.o ./system/src/newlib/_sbrk.o ./system/src/newlib/_startup.o ./system/src/newlib/_syscalls.o ./system/src/newlib/assert.o  ./system/src/diag/Trace.o ./system/src/diag/trace_impl.o  ./system/src/cortexm/_initialize_hardware.o ./system/src/cortexm/_reset_hardware.o ./system/src/cortexm/exception_handlers.o  ./system/src/cmsis/system_stm32f4xx.o ./system/src/cmsis/vectors_stm32f401xc.o  ./src/MGPIO_program.o ./src/MRCC_prog.o ./src/MSYSTICK_Program.o ./src/STMU_Program.o ./src/main.o   
+Finished building target: 06.1_TMU_With_FD.elf
+ 
+Invoking: Cross ARM GNU Create Flash Image
+arm-none-eabi-objcopy -O ihex "06.1_TMU_With_FD.elf"  "06.1_TMU_With_FD.hex"
+Finished building: 06.1_TMU_With_FD.hex
+ 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "06.1_TMU_With_FD.elf"
+   text	   data	    bss	    dec	    hex	filename
+   5687	    160	    456	   6303	   189f	06.1_TMU_With_FD.elf
+Finished building: 06.1_TMU_With_FD.siz
+ 
+
+15:23:04 Build Finished (took 4s.658ms)
+

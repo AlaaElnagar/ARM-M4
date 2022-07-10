@@ -1,0 +1,16 @@
+src/STMU_Program.o: ../src/STMU_Program.c ../include/LSTD_TYPES.h \
+ ../include/LBIT_MATH.h ../include/MSYSTICK_Interface.h \
+ ../include/STMU_Config.h ../include/STMU_Private.h \
+ ../include/STMU_Interface.h
+
+../include/LSTD_TYPES.h:
+
+../include/LBIT_MATH.h:
+
+../include/MSYSTICK_Interface.h:
+
+../include/STMU_Config.h:
+
+../include/STMU_Private.h:
+
+../include/STMU_Interface.h:

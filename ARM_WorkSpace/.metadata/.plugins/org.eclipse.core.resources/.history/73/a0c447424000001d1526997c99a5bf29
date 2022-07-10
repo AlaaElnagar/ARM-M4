@@ -1,0 +1,26 @@
+/*
+ * HTMU_Private.h
+ *
+ *  Created on: Jul 10, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HTMU_PRIVATE_H_
+#define HTMU_PRIVATE_H_
+
+
+
+typedef struct
+{
+
+  u16 Periodicity         ;
+  void (*FuncPtr)(void)   ;
+
+}Task_t;
+
+Tasks_t  Task_Array[]
+
+static void  Scheduler(void) ;
+
+
+#endif /* HTMU_PRIVATE_H_ */

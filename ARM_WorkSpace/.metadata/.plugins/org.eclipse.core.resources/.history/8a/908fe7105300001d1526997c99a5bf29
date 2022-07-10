@@ -1,0 +1,16 @@
+src/HTMU_Program.o: ../src/HTMU_Program.c ../include/LSTD_TYPES.h \
+ ../include/LBIT_MATH.h ../include/MSYSTICK_Interface.h \
+ ../include/HTMU_Config.h ../include/HTMU_Private.h \
+ ../include/HTMU_Interface.h
+
+../include/LSTD_TYPES.h:
+
+../include/LBIT_MATH.h:
+
+../include/MSYSTICK_Interface.h:
+
+../include/HTMU_Config.h:
+
+../include/HTMU_Private.h:
+
+../include/HTMU_Interface.h:

@@ -1,0 +1,30 @@
+/*
+ * HTMU_Interface.h
+ *
+ *  Created on: Jul 10, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HTMU_INTERFACE_H_
+#define HTMU_INTERFACE_H_
+
+
+
+
+
+/*Create Task*/
+void HTMU_voidCreateTask(u8 Copy_TaskID,u16 Copy_u16TaskPeriodicity , void(*Fptr)(void),u16  Copy_u16firstDelay) ;
+
+/*Start Scheduling*/
+void HTMU_voidStart(void) ;
+
+void HTMU_voidSuspendTask(u8 Copy_u8TaskID);
+
+
+void HTMU_voidDeleteTask(u8 Copy_u8TaskID);
+
+
+void HTMU_voidResumeTask(u8 Copy_u8TaskID);
+
+
+#endif /* HTMU_INTERFACE_H_ */

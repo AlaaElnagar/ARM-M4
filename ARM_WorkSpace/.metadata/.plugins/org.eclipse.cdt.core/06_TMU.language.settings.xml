@@ -7,24 +7,6 @@
 					<entry kind="includePath" name="D:/01_Ahmed_Khaled/02_ARM/02_IMT_ARM_Diploma/02- Tools/03- IMT SDK/IMT_SDK_Win_64/WinARM/ArmGCC/lib/gcc/arm-none-eabi/7.2.1/include">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_QRDMX">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FEATURE_NUMERIC_MAXMIN">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FP">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FP16_FORMAT_IEEE">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FP16_FORMAT_ALTERNATIVE">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
-					<entry kind="includePath" name="/${ProjName}/#undef __ARM_FP16_ARGS">
-						<flag value="BUILTIN|READONLY|VALUE_WORKSPACE_PATH"/>
-					</entry>
 					<entry kind="includePath" name="D:/01_Ahmed_Khaled/02_ARM/02_IMT_ARM_Diploma/02- Tools/03- IMT SDK/IMT_SDK_Win_64/WinARM/ArmGCC/lib/gcc/arm-none-eabi/7.2.1/include-fixed">
 						<flag value="BUILTIN|READONLY"/>
 					</entry>

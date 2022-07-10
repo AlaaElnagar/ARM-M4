@@ -1,0 +1,40 @@
+/*
+ * HTMU_Program.c
+ *
+ *  Created on: Jul 10, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#include "LSTD_TYPES.h"
+#include "LBIT_MATH.h"
+
+#include "MSYSTICK_Interface.h"
+
+#include "HTMU_Config.h"
+#include "HTMU_Private.h"
+#include "HTMU_Interface.h"
+
+
+/*Create Task*/
+void HTMU_voidCreateTask(u8 Copy_TaskID,u16 Copy_u16TaskPeriodicity , void(*Fptr)(void))
+{
+    Task_Array[Copy_TaskID].Periodicity= Copy_u16TaskPeriodicity ;
+    Task_Array[Copy_TaskID].FuncPtr= Fptr ;
+
+}
+
+/*Start Scheduling*/
+void HTMU_voidStart(void)
+{
+  /*initialize Systick to determine tick time */
+  MSTK_voidInit() ;
+  /*when HSI=16Mhz , system tick is 1ms*/
+  MSTK_voidStart(500) ;
+}
+
+/*determine the Task order*/
+static void Scheduler(void)
+{
+
+
+}

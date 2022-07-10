@@ -1,0 +1,15 @@
+/*
+ * HTMU_Config.h
+ *
+ *  Created on: Jul 10, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HTMU_CONFIG_H_
+#define HTMU_CONFIG_H_
+
+
+#define NO_OF_TASKS
+
+
+#endif /* HTMU_CONFIG_H_ */

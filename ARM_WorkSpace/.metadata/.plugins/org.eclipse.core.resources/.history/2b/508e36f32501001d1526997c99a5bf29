@@ -1,0 +1,87 @@
+#include "LSTD_TYPES.h"
+
+#include "MRCC_interface.h"
+#include "MGPIO_interface.h"
+#include "MNVIC_Interface.h"
+#include "MEXTI_interface.h"
+
+
+#define NVIC_EXTI0     6
+
+
+
+
+void App_voidGetFrame(){
+
+ asm("NOP") ;
+}
+
+
+
+int main(void)
+{
+	/*System Clock is 16MHz from HSI*/
+	MRCC_voidInitSystemClk();
+
+	/*Enable GPIO Peripheral clock*/
+	MRCC_voidEnablePeripheralClock(AHB1,_PERIPHERAL_EN_GPIOA ) ;
+	MRCC_voidEnablePeripheralClock(APB2, PERIPHERAL_EN_SYSCFG) ;
+
+	for(u8 PIN = 1 ;PIN <=3 ;PIN++ )
+	{
+		/*Set Pin Mode --> Output*/
+		MGPIO_voidSetPinMode(_GPIOA_PORT, PIN, _MODE_OUTPUT) ;
+		/*Out put Push Pull*/
+		MGPIO_voidSetPinOutPutType(_GPIOA_PORT,PIN,_OUTPUT_TYPE_PUSH_PULL);
+		/*Pin Speed*/
+		MGPIO_voidSetPinOutSpeed(_GPIOA_PORT, PIN, _OUTPUT_SPEED_LOW);
+	}
+
+
+	/*Set Pin Mode --> Input*/
+	MGPIO_voidSetPinMode(_GPIOA_PORT, _PIN_0, _MODE_INPUT) ;     //EXTI0
+
+
+	/*Input Pull Type*/
+	MGPIO_voidSetPullType(_GPIOA_PORT, _PIN_0, _PULL_OFF);
+
+
+	//Initialize Interrupt Group
+	//	MNVIC_voidInitInterruptGroup(NVIC_GroupMode_g16s0);
+	//	//NO_SUB_PRIORITY
+	//	MNVIC_voidSetInterruptPriority(NVIC_EXTI0,NVIC_GroupMode_g16s0, 1 , 0);
+	//	MNVIC_voidSetInterruptPriority(NVIC_EXTI1,NVIC_GroupMode_g16s0, 2 , 0);   //High Priority
+
+	MEXTI0_voidSetCallBack(App_voidGetFrame);
+
+
+	MEXTI_voidSetEXTIConfiguration(EXTI0, _GPIOA_PORT);
+
+	MEXTI_voidSetSignalLatch(EXTI0, FALLING_EDGE);
+
+	//Enable Peripheral Interrupt
+	MNVIC_voidEnableInterrupt(NVIC_EXTI0);
+
+	/*SysTick Init*/
+	MSTK_voidInit(); /*Enable SysTick AHB/8 = 2MHZ , 1 count = 0.5 Micro second  */
+	/* Loop forever */
+	while(1)
+	{
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

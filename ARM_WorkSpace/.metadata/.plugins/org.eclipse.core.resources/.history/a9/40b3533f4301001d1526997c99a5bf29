@@ -1,0 +1,18 @@
+/*
+ * HSTP_Config.h
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HSTP_CONFIG_H_
+#define HSTP_CONFIG_H_
+
+
+/* Please write pins in pairs port,pin */
+#define HSTP_SERIAL_DATA     GPIOA,0
+#define HSTP_SHIFT_CLOCK     GPIOA,2
+#define HSTP_STORE_CLOCK     GPIOA,1
+
+
+#endif /* HSTP_CONFIG_H_ */

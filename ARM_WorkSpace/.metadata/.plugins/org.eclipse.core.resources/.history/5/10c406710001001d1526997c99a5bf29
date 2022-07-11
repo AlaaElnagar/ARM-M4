@@ -1,0 +1,26 @@
+/*
+ * HLED_MATRIX_Program.c
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+
+void HLEDMAT_voidInit(void)
+{
+
+
+
+
+}
+
+void HLEDMAT_voidDisplayFrame(u8 *Copy_u8Frame)
+{
+
+
+
+
+
+
+}
+

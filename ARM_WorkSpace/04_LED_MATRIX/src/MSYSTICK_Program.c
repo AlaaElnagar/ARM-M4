@@ -100,7 +100,7 @@ void MSTK_voidInit( void ){
 
 void MSTK_voidStart( u32 Copy_PreloadValue ){
 
-	// AHB = EXT = 8MHZ & CLOCK OF MSTK = AHB / 8 = 8MHZ / 8 = 1MHZ = 1 Micro For Each Count
+	// AHB = EXT = 16MHZ & CLOCK OF MSTK = AHB / 8 = 16MHZ / 8 = 2MHZ = 0.5 Micro For Each Count
 	//Load Reload Value
 	MSTK->LOAD = Copy_PreloadValue - 1;
 	//Clear Val Register

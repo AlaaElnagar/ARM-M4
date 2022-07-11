@@ -1,0 +1,32 @@
+/*
+ * HLED_MATRIX_Config.h
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HLED_MATRIX_CONFIG_H_
+#define HLED_MATRIX_CONFIG_H_
+
+
+#define HLEDMAT_ROW_0      GPIOA,7
+#define HLEDMAT_ROW_1      GPIOA,6
+#define HLEDMAT_ROW_2      GPIOA,5
+#define HLEDMAT_ROW_3      GPIOA,4
+#define HLEDMAT_ROW_4      GPIOA,3
+#define HLEDMAT_ROW_5      GPIOA,2
+#define HLEDMAT_ROW_6      GPIOA,1
+#define HLEDMAT_ROW_7      GPIOA,0
+
+
+#define HLEDMAT_COL_0      GPIOB,8
+#define HLEDMAT_COL_1      GPIOB,6
+#define HLEDMAT_COL_2      GPIOB,5
+#define HLEDMAT_COL_3      GPIOB,4
+#define HLEDMAT_COL_4      GPIOB,3
+#define HLEDMAT_COL_5      GPIOB,2
+#define HLEDMAT_COL_6      GPIOB,1
+#define HLEDMAT_COL_7      GPIOB,0
+
+
+#endif /* HLED_MATRIX_CONFIG_H_ */

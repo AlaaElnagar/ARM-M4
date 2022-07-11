@@ -1,0 +1,15 @@
+/*
+ * HLED_MATRIX_Privaite.h
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#ifndef HLED_MATRIX_PRIVAITE_H_
+#define HLED_MATRIX_PRIVAITE_H_
+
+
+
+static void DisableAllCols(void);
+
+#endif /* HLED_MATRIX_PRIVAITE_H_ */

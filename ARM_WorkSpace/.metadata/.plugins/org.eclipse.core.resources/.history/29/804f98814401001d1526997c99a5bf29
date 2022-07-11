@@ -1,0 +1,56 @@
+/*
+ * HSTP_Program.c
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#include "LSTD_TYPES.h"
+#include "LBIT_MATH.h"
+
+#include "MGPIO_interface.h"
+#include "MSYSTICK_Interface.h"
+
+
+#include "HSTP_Config.h"
+#include "HSTP_Interface.h"
+
+void HSTP_voidSendSynchronus(u8 Copy_u8DataToSend)
+{
+	s8 Local_s8Counter;
+	u8 Local_u8Bit;
+	for (Local_s8Counter = 7; Local_s8Counter >=0; Local_s8Counter--)
+	{
+		/* Send bit by bit strating from MSb */
+		Local_u8Bit =  GET_BIT(Copy_u8DataToSend,Local_s8Counter);
+
+		MGPIO_voidWriteData(HSTP_SERIAL_DATA,Local_u8Bit) ;
+
+		/* Send Pulse to Shift Clock */
+		MGPIO_voidWriteData(HSTP_SHIFT_CLOCK,_HIGH) ;
+		MSTK_voidSetBusyWait(1);
+		MGPIO_voidWriteData(HSTP_SHIFT_CLOCK,_LOW) ;
+		MSTK_voidSetBusyWait(1);
+	}
+
+			/* Send Pulse to Shift Clock */
+	MGPIO_voidWriteData(HSTP_STORE_CLOCK,_HIGH);
+	MSTK_voidSetBusyWait(1);
+	MGPIO_voidWriteData(HSTP_STORE_CLOCK,_LOW);
+	MSTK_voidSetBusyWait(1);
+
+}
+
+
+
+/* Suppose That The Clock System (AHB) = 8MHZ EXT & The Systick Clock Is = AHB/8 */
+void _delay_us( u32 Copy_u32Time ){
+
+	MSTK_voidInit();
+	/* Disable INT */
+	MSTK_voidINTStatus( MSTK_INT_DIS );
+	MSTK_voidStart( Copy_u32Time );
+	/* Wiat Flag Polling */
+	while( MSTK_u8ReadFlag() == 0 );
+
+}

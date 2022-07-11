@@ -1,0 +1,158 @@
+/*
+ * HLED_MATRIX_Program.c
+ *
+ *  Created on: Jul 11, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+/*******************************************************************************************************/
+/*                                      Standard Types LIB                                             */
+/*******************************************************************************************************/
+
+#include "LSTD_TYPES.h"
+#include "LERROR_STATES.h"
+#include "LBIT_MATH.h"
+
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      MCAL Components                                                */
+/*******************************************************************************************************/
+
+
+#include "MGPIO_interface.h"
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      HAL Components                                                */
+/*******************************************************************************************************/
+
+
+#include "HLED_MATRIX_Interface.h"
+#include "HLED_MATRIX_Config.h"
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+/*******************************************************************************************************/
+/*                                      Functions Implementations                                      */
+/*******************************************************************************************************/
+
+/*#####################################################################################################*/
+/*#####################################################################################################*/
+
+void HLEDMAT_voidInit(void)
+{
+
+	/*Set Pin Mode for Row --> Output*/
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_0 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_1 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_2 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_3 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_4 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_5 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_6 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_ROW_7 , _MODE_OUTPUT) ;
+
+	/*Set Pin Mode for Col --> Output*/
+
+	MGPIO_voidSetPinMode( HLEDMAT_COL_0 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_1 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_2 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_3 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_4 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_5 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_6 , _MODE_OUTPUT) ;
+	MGPIO_voidSetPinMode( HLEDMAT_COL_7 , _MODE_OUTPUT) ;
+
+	/*Out put Push Pull for Row*/
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_0,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_1,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_2,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_3,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_4,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_5,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_6,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_ROW_7,_OUTPUT_TYPE_PUSH_PULL);
+
+	/*Out put Push Pull for Col*/
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_0,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_1,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_2,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_3,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_4,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_5,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_6,_OUTPUT_TYPE_PUSH_PULL);
+	MGPIO_voidSetPinOutPutType(HLEDMAT_COL_7,_OUTPUT_TYPE_PUSH_PULL);
+
+	/*Pin Speed for Rows*/
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_0, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_1, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_2, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_3, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_4, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_5, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_6, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_ROW_7, _OUTPUT_SPEED_LOW);
+
+	/*Pin Speed for Cols*/
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_0, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_1, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_2, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_3, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_4, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_5, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_6, _OUTPUT_SPEED_LOW);
+	MGPIO_voidSetPinOutSpeed(HLEDMAT_COL_7, _OUTPUT_SPEED_LOW);
+
+}
+
+void HLEDMAT_voidDisplayFrame(u8 *Copy_u8Frame)
+{
+	u8 Local_u8BIT ;
+
+	/*Disable  All Columns*/
+	DisableAllCols();
+
+
+	/*Enable Column 0*/
+	MGPIO_voidWriteData(HLEDMAT_COL_0, _LOW) ;
+
+	/*Set Row Value*/
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],0);
+	MGPIO_voidWriteData(HLEDMAT_ROW_0, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],1);
+	MGPIO_voidWriteData(HLEDMAT_ROW_1, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],2);
+	MGPIO_voidWriteData(HLEDMAT_ROW_2, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],3);
+	MGPIO_voidWriteData(HLEDMAT_ROW_3, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],4);
+	MGPIO_voidWriteData(HLEDMAT_ROW_4, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],5);
+	MGPIO_voidWriteData(HLEDMAT_ROW_5, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],6);
+	MGPIO_voidWriteData(HLEDMAT_ROW_6, Local_u8BIT) ;
+	Local_u8BIT = GET_BIT(Copy_u8Frame[0],7);
+	MGPIO_voidWriteData(HLEDMAT_ROW_7, Local_u8BIT) ;
+
+}
+
+
+void DisableAllCols(void)
+{
+
+	MGPIO_voidWriteData(HLEDMAT_COL_0, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_1, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_2, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_3, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_4, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_5, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_6, _HIGH) ;
+	MGPIO_voidWriteData(HLEDMAT_COL_7, _HIGH) ;
+
+}

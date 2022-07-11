@@ -10728,3 +10728,21 @@ Caused by: java.io.EOFException: SSL peer shut down incorrectly
 
 !ENTRY org.eclipse.cdt.core 1 0 2022-07-10 19:54:49.655
 !MESSAGE Indexed '11_AudioSignal_DAC' (25 sources, 302 headers) in 3.43 sec: 17,779 declarations; 29,455 references; 3 unresolved inclusions; 211 syntax errors; 1,740 unresolved names (3.6%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 12:51:34.171
+!MESSAGE Indexed '04_LED_MATRIX' (26 sources, 225 headers) in 4 sec: 13,233 declarations; 22,634 references; 30 unresolved inclusions; 192 syntax errors; 3,421 unresolved names (8.7%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 16:12:21.399
+!MESSAGE Indexed '12_Control_RGB_LEDWith_IR' (25 sources, 165 headers) in 2.26 sec: 10,870 declarations; 15,540 references; 42 unresolved inclusions; 256 syntax errors; 5,785 unresolved names (18%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 16:30:33.122
+!MESSAGE Indexed '12_Control_RGB_LEDWith_IR' (27 sources, 311 headers) in 3.5 sec: 18,340 declarations; 32,222 references; 0 unresolved inclusions; 148 syntax errors; 125 unresolved names (0.25%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 16:30:41.534
+!MESSAGE Indexed '12_Control_RGB_LEDWith_IR' (27 sources, 311 headers) in 3.98 sec: 18,340 declarations; 32,222 references; 0 unresolved inclusions; 148 syntax errors; 125 unresolved names (0.25%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 19:55:03.975
+!MESSAGE Indexed '13_STP_ShiftRegister' (31 sources, 165 headers) in 2.46 sec: 10,870 declarations; 15,642 references; 42 unresolved inclusions; 256 syntax errors; 5,785 unresolved names (18%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-11 20:13:28.041
+!MESSAGE Indexed '13_STP_ShiftRegister' (28 sources, 313 headers) in 3.11 sec: 18,364 declarations; 32,317 references; 0 unresolved inclusions; 148 syntax errors; 125 unresolved names (0.25%)

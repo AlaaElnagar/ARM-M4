@@ -1,0 +1,40 @@
+20:56:37 **** Incremental Build of configuration Debug for project 14_BootloaderCode ****
+make all 
+Building file: ../src/main.c
+Invoking: Cross ARM GNU C Compiler
+arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -DDEBUG -DUSE_FULL_ASSERT -DTRACE -DOS_USE_TRACE_SEMIHOSTING_DEBUG -DSTM32F401xC -DUSE_HAL_DRIVER -DHSE_VALUE=25000000 -I"../include" -I"../system/include" -I"../system/include/cmsis" -I"../system/include/stm32f4-hal" -std=gnu11 -MMD -MP -MF"src/main.d" -MT"src/main.o" -c -o "src/main.o" "../src/main.c"
+../src/main.c: In function 'main':
+../src/main.c:124:47: warning: passing argument 1 of 'MUSART1_u8ReceiveCharSync' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   LOC_u8RecStatus = MUSART1_u8ReceiveCharSync(&u8RecBuffer[u8RecCounter]);
+                                               ^
+In file included from ../src/main.c:10:0:
+../include/MUSART_Interface.h:38:4: note: expected 'u8 * {aka unsigned char *}' but argument is of type 'volatile u8 * {aka volatile unsigned char *}'
+ u8 MUSART1_u8ReceiveCharSync( u8* Copy_u8DataCome ) ;
+    ^~~~~~~~~~~~~~~~~~~~~~~~~
+../src/main.c:142:28: warning: passing argument 1 of 'PARSE_voidParseRecord' discards 'volatile' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     PARSE_voidParseRecord( u8RecBuffer );
+                            ^~~~~~~~~~~
+In file included from ../src/main.c:15:0:
+../src/SPARSER_Interface.h:16:6: note: expected 'u8 * {aka unsigned char *}' but argument is of type 'volatile u8 * {aka volatile unsigned char *}'
+ void PARSE_voidParseRecord ( u8 * Copy_u8BufData );
+      ^~~~~~~~~~~~~~~~~~~~~
+Finished building: ../src/main.c
+ 
+Building target: 14_BootloaderCode.elf
+Invoking: Cross ARM GNU C++ Linker
+arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -Og -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -ffreestanding -fno-move-loop-invariants -Wall -Wextra  -g3 -T mem.ld -T libs.ld -T sections.ld -nostartfiles -Xlinker --gc-sections -L"../ldscripts" -Wl,-Map,"14_BootloaderCode.map" --specs=nano.specs -o "14_BootloaderCode.elf"  ./system/src/stm32f4-hal/stm32f4xx_hal.o ./system/src/stm32f4-hal/stm32f4xx_hal_cortex.o ./system/src/stm32f4-hal/stm32f4xx_hal_dfsdm.o ./system/src/stm32f4-hal/stm32f4xx_hal_flash.o ./system/src/stm32f4-hal/stm32f4xx_hal_gpio.o ./system/src/stm32f4-hal/stm32f4xx_hal_iwdg.o ./system/src/stm32f4-hal/stm32f4xx_hal_pwr.o ./system/src/stm32f4-hal/stm32f4xx_hal_rcc.o  ./system/src/newlib/_cxx.o ./system/src/newlib/_exit.o ./system/src/newlib/_sbrk.o ./system/src/newlib/_startup.o ./system/src/newlib/_syscalls.o ./system/src/newlib/assert.o  ./system/src/diag/Trace.o ./system/src/diag/trace_impl.o  ./system/src/cortexm/_initialize_hardware.o ./system/src/cortexm/_reset_hardware.o ./system/src/cortexm/exception_handlers.o  ./system/src/cmsis/system_stm32f4xx.o ./system/src/cmsis/vectors_stm32f401xc.o  ./src/MEXTI_prog.o ./src/MFPEC_Program.o ./src/MGPIO_program.o ./src/MNVIC_Program.o ./src/MRCC_prog.o ./src/MSYSTICK_Program.o ./src/MUSART_Program.o ./src/SPARSER_Program.o ./src/main.o   
+Finished building target: 14_BootloaderCode.elf
+ 
+Invoking: Cross ARM GNU Create Flash Image
+arm-none-eabi-objcopy -O ihex "14_BootloaderCode.elf"  "14_BootloaderCode.hex"
+Finished building: 14_BootloaderCode.hex
+ 
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "14_BootloaderCode.elf"
+   text	   data	    bss	    dec	    hex	filename
+   6899	    168	    740	   7807	   1e7f	14_BootloaderCode.elf
+Finished building: 14_BootloaderCode.siz
+ 
+
+20:56:40 Build Finished (took 2s.730ms)
+

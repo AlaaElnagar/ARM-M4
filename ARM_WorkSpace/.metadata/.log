@@ -10746,3 +10746,12 @@ Caused by: java.io.EOFException: SSL peer shut down incorrectly
 
 !ENTRY org.eclipse.cdt.core 1 0 2022-07-11 20:13:28.041
 !MESSAGE Indexed '13_STP_ShiftRegister' (28 sources, 313 headers) in 3.11 sec: 18,364 declarations; 32,317 references; 0 unresolved inclusions; 148 syntax errors; 125 unresolved names (0.25%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-12 18:42:35.674
+!MESSAGE Indexed '14_BootloaderCode' (25 sources, 165 headers) in 2.66 sec: 10,870 declarations; 15,540 references; 42 unresolved inclusions; 256 syntax errors; 5,785 unresolved names (18%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-12 19:04:09.824
+!MESSAGE Indexed '14_BootloaderCode' (31 sources, 311 headers) in 2.84 sec: 18,038 declarations; 30,281 references; 3 unresolved inclusions; 211 syntax errors; 1,740 unresolved names (3.5%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2022-07-12 21:09:47.960
+!MESSAGE Indexed '15_ApplicationForBL' (31 sources, 165 headers) in 2.14 sec: 10,870 declarations; 15,642 references; 42 unresolved inclusions; 256 syntax errors; 5,785 unresolved names (18%)

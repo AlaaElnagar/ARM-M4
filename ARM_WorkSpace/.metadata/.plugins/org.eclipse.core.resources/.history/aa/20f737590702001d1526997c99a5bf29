@@ -1,0 +1,80 @@
+/*
+ * MFPEC_Program.c
+ *
+ *  Created on: Jul 12, 2022
+ *      Author: Ahmed Khaled Hammad
+ */
+
+#include "LSTD_TYPES.h"
+#include "LBIT_MATH.h"
+
+
+
+#include "MFPEC_Privaite.h"
+#include "MFPEC_Config.h"
+#include "MFPEC_Interface.h"
+
+void MFPEC_voidEraseAppArea(void){
+
+	u8 LOC_u8Iterator ;
+	for ( LOC_u8Iterator = 6 ; LOC_u8Iterator < 64 ; LOC_u8Iterator++ ){
+
+		MFPEC_voidPageErase( LOC_u8Iterator );
+
+	}
+
+}
+
+void MFPEC_voidPageErase   ( u8 Copy_u8PageNumber ){
+
+	while( GET_BIT( MFPEC -> SR , 0 ) == 1 );
+
+	if( GET_BIT( MFPEC -> CR , 7 ) == 1 ){
+
+		MFPEC -> KEYR = 0x45670123 ;
+		MFPEC -> KEYR = 0xCDEF89AB ;
+
+	}
+
+	SET_BIT( MFPEC -> CR , 1 );
+
+	MFPEC -> AR = (u32)( Copy_u8PageNumber * 1024 ) + 0x08000000 ;
+
+	SET_BIT( MFPEC -> CR , 6 );
+
+	while( GET_BIT( MFPEC -> SR , 0 ) == 1 );
+
+	SET_BIT( MFPEC -> SR , 5 );
+	CLR_BIT( MFPEC -> CR , 1 );
+
+}
+
+void MFPEC_voidFlashWrite( u32 Copy_u32Address , u16 * Copy_u16Data , u8 Copy_u8DataLength ){
+
+	u8 LOC_u8Iterator ;
+
+	while( GET_BIT( MFPEC -> SR , 0 ) == 1 );
+
+	if( GET_BIT( MFPEC -> CR , 7 ) == 1 ){
+
+		MFPEC -> KEYR = 0x45670123 ;
+		MFPEC -> KEYR = 0xCDEF89AB ;
+
+	}
+
+	for( LOC_u8Iterator = 0 ; LOC_u8Iterator < Copy_u8DataLength ; LOC_u8Iterator++ ){
+
+		SET_BIT( MFPEC -> CR , 0 );
+
+		*( (volatile u16 *)Copy_u32Address ) = Copy_u16Data[ LOC_u8Iterator ] ;
+		Copy_u32Address += 2 ;
+
+		while( GET_BIT( MFPEC -> SR , 0 ) == 1 );
+
+		SET_BIT( MFPEC -> SR , 5 );
+		CLR_BIT( MFPEC -> CR , 0 );
+
+	}
+
+}
+
